@@ -13,6 +13,7 @@
         <module>koemans-web-ktor</module>
         <module>koemans-exposed</module>
         <module>koemans-coroutine</module>
+        <module>koemans-web-spring</module>
     </modules>
 
     <properties>
@@ -21,6 +22,9 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.version>1.4.20</kotlin.version>
+
+        <spring.context.version>5.3.7</spring.context.version>
+
         <!--  No, we don't need style recommendations -->
         <!-- <kotlin.code.style>official</kotlin.code.style>-->
     </properties>
