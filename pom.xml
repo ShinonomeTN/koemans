@@ -14,6 +14,7 @@
         <module>koemans-exposed</module>
         <module>koemans-coroutine</module>
         <module>koemans-web-spring</module>
+        <module>koemans-event-hub</module>
     </modules>
 
     <properties>
@@ -21,7 +22,9 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kotlinx.coroutine.version>1.4.3</kotlinx.coroutine.version>
         <kotlin.version>1.4.20</kotlin.version>
+        <logback.version>1.2.3</logback.version>
 
         <spring.context.version>5.3.7</spring.context.version>
 
@@ -45,10 +48,19 @@
                 <artifactId>kotlin-stdlib-jdk8</artifactId>
                 <version>${kotlin.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.kotlinx</groupId>
+                <artifactId>kotlinx-coroutines-core</artifactId>
+                <version>${kotlinx.coroutine.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -50,7 +50,7 @@ class SortOptionMapping internal constructor(private val config: Configuration) 
             val sortMeta = o.value
 
             val sortOrder = options[fieldName]?.let {
-                allowedSortOptions[it] ?: throw SortOptionValidationException("invalid_sort_option:$fieldName,$it")
+                allowedSortOptions[it.toUpperCase()] ?: throw SortOptionValidationException("invalid_sort_option:$fieldName,$it")
             } ?: sortMeta.sortOrder
 
             fieldName to SortOption(sortMeta.column, sortOrder)
