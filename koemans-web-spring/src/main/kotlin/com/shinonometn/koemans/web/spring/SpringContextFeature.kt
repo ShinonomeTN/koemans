@@ -24,6 +24,7 @@ class SpringContext(configuration: Configuration) {
 
         internal var applicationContext: GenericApplicationContext? = null
             private set
+
         internal var whenApplicationStart: () -> Unit = {}
         internal var whenApplicationClose: () -> Unit = {}
 
@@ -103,17 +104,19 @@ private fun timing(task: () -> Unit): Long {
 }
 
 class SpringContextConfiguration internal constructor() {
-    val additionalActions = LinkedList<GenericApplicationContext.() -> Unit>()
+    private val additionalActions = LinkedList<GenericApplicationContext.() -> Unit>()
+
+    fun additionalActions(action : GenericApplicationContext.() -> Unit) = additionalActions.add(action)
 
     internal fun applyOn(context: GenericApplicationContext) = additionalActions.forEach { context.it() }
 
     inline fun <reified T> registerBean(name: String, bean: T): SpringContextConfiguration {
-        additionalActions.add { registerBean(name, bean!!::class.java, { bean }) }
+        additionalActions { registerBean(name, bean!!::class.java, { bean }) }
         return this
     }
 
     inline fun <reified T> registerBean(bean: T): SpringContextConfiguration {
-        additionalActions.add { registerBean(T::class.java, { bean }) }
+        additionalActions { registerBean(T::class.java, { bean }) }
         return this
     }
 }

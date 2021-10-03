@@ -8,7 +8,6 @@ import org.springframework.core.io.support.EncodedResource
 import org.springframework.core.io.support.PropertySourceFactory
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
-import java.nio.file.Paths
 
 private val PARSE_OPTION = ConfigParseOptions.defaults().apply {
     syntax = ConfigSyntax.CONF
@@ -23,12 +22,12 @@ private fun parseHoconFrom(resource: Resource): Config {
 }
 
 private fun toFlatMap(config: Config): Map<String, Any> {
-    val properties = LinkedHashMap<String,Any>()
+    val properties = LinkedHashMap<String, Any>()
     toFlatMap(properties, "", config)
     return properties
 }
 
-private fun toFlatMap(properties : MutableMap<String,Any>, parentKey : String, config : Config) {
+private fun toFlatMap(properties: MutableMap<String, Any>, parentKey: String, config: Config) {
     val prefix = if ("" == parentKey) "" else "$parentKey."
     for ((key, value) in config.entrySet()) {
         val propertyKey = prefix + key
@@ -38,8 +37,8 @@ private fun toFlatMap(properties : MutableMap<String,Any>, parentKey : String, c
 
 private fun addConfigValuePropertyTo(properties: MutableMap<String, Any>, key: String, value: ConfigValue) {
     when (value) {
-        is ConfigList -> processListValue(properties, key,  value)
-        is ConfigObject -> processObjectValue(properties, key,  value)
+        is ConfigList -> processListValue(properties, key, value)
+        is ConfigObject -> processObjectValue(properties, key, value)
         else -> processScalarValue(properties, key, value)
     }
 }
@@ -58,7 +57,7 @@ private fun processListValue(properties: MutableMap<String, Any>, key: String, v
 }
 
 private fun processObjectValue(properties: MutableMap<String, Any>, key: String, value: ConfigObject) {
-    toFlatMap(properties, key,  value.toConfig())
+    toFlatMap(properties, key, value.toConfig())
 }
 
 private fun processScalarValue(properties: MutableMap<String, Any>, key: String, value: ConfigValue) {
@@ -71,11 +70,11 @@ class HoconPropertySource : PropertySourceFactory {
     }
 
     companion object {
-        fun buildPropertySourceFrom(name : String, config : Config): PropertySource<*> {
+        fun buildPropertySourceFrom(name: String, config: Config): PropertySource<*> {
             return MapPropertySource(name, toFlatMap(config))
         }
 
-        fun buildPropertySourceFrom(name : String?, encoded: EncodedResource) : PropertySource<*> {
+        fun buildPropertySourceFrom(name: String?, encoded: EncodedResource): PropertySource<*> {
             val resource = encoded.resource
             val realName = name ?: resource.filename
             return MapPropertySource(realName, toFlatMap(parseHoconFrom(resource)))
@@ -83,14 +82,14 @@ class HoconPropertySource : PropertySourceFactory {
     }
 }
 
-fun SpringContextConfiguration.useHoconPropertySource(name : String, hoconConf : Config) {
-    additionalActions.add {
+fun SpringContextConfiguration.useHoconPropertySource(name: String, hoconConf: Config) {
+    additionalActions {
         environment.propertySources.addFirst(HoconPropertySource.buildPropertySourceFrom(name, hoconConf))
     }
 }
 
-fun SpringContextConfiguration.useHoconPropertySource(name : String?, resource: Resource) {
-    additionalActions.add {
+fun SpringContextConfiguration.useHoconPropertySource(name: String?, resource: Resource) {
+    additionalActions {
         environment.propertySources.addFirst(HoconPropertySource.buildPropertySourceFrom(name, EncodedResource(resource, "UTF8")))
     }
 }
