@@ -99,6 +99,20 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- References: https://www.baeldung.com/maven-deploy-nexus  -->
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
@@ -115,7 +129,8 @@
                 </executions>
                 <configuration>
                     <serverId>shinonometn-public</serverId>
-                    <nexusUrl>https://nexus.shinonometn.com/repository/maven-public/</nexusUrl>
+                    <nexusUrl>https://nexus.shinonometn.com/</nexusUrl>
+                    <skipStaging>true</skipStaging>
                 </configuration>
             </plugin>
         </plugins>

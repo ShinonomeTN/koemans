@@ -1,8 +1,5 @@
 package com.shinonometn.koemans.utils
 
-import java.nio.ByteBuffer
-import java.util.*
-
 /**
  * Copy from io.ktor.server.engine.CommandLine
  *
@@ -20,8 +17,10 @@ fun String.splitToPair(separator: Char): Pair<String, String>? = indexOf(separat
  * Check if string is a literal number
  */
 fun String.isNumber(): Boolean {
-    if(isBlank()) return false
-    for (c in this) { if (!c.isDigit()) return false }
+    if (isBlank()) return false
+    for (c in this) {
+        if (!c.isDigit()) return false
+    }
 
     return true
 }
@@ -32,12 +31,12 @@ fun String.isNumber(): Boolean {
  * @param maxFloatDigests set the length limitation of the float part, default is '18'.
  * @param allowLeftPaddingZeros set if allow left padding zeros, default is 'false'.
  */
-fun String.isDecimal(maxFloatDigests: Int = 18, allowLeftPaddingZeros : Boolean = false): Boolean {
-    if(isBlank()) return false
+fun String.isDecimal(maxFloatDigests: Int = 18, allowLeftPaddingZeros: Boolean = false): Boolean {
+    if (isBlank()) return false
 
-    if(!allowLeftPaddingZeros && length > 2) when(this[0]) {
-        '+', '-' -> if(this[1] == '0' && this.length > 2 && this[2] == '0') return false
-        '0' -> if(this[1] == '0') return false
+    if (!allowLeftPaddingZeros && length > 2) when (this[0]) {
+        '+', '-' -> if (this[1] == '0' && this.length > 2 && this[2] == '0') return false
+        '0' -> if (this[1] == '0') return false
     }
 
     var decimalMode = false
@@ -78,6 +77,6 @@ fun String.isBoolean(): Boolean {
     return l == "true" || l == "false"
 }
 
-fun secondsToNiceTimeString(s : Long) : String {
+fun secondsToNiceTimeString(s: Long): String {
     return "${s / 86400}d ${s / 3600 % 24}h ${s / 60 % 60}m ${s % 60}s"
 }
