@@ -2,11 +2,9 @@ package com.shinonometn.koemans.web.spring
 
 import io.ktor.application.*
 
-/*
-*
-* Providing ktor application configuration feature
-*
-*/
+/**
+ * Providing ktor application auto configuration feature
+ */
 interface KtorApplicationConfiguration {
     val priority: Double
         get() = 1.0
@@ -14,6 +12,9 @@ interface KtorApplicationConfiguration {
     fun Application.configure()
 }
 
+/**
+ * Apply all configuration actions that provided by [KtorApplicationConfiguration] beans.
+ */
 fun Application.installSpringFeatureConfiguration() {
     val featureConfigs = springContext.getBeansOfType(KtorApplicationConfiguration::class.java).values
 
