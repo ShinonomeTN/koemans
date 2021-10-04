@@ -82,12 +82,20 @@ class HoconPropertySource : PropertySourceFactory {
     }
 }
 
-fun SpringContextConfiguration.useHoconPropertySource(name: String, hoconConf: Config) {
+/**
+ * Build a property source from given [hocon] Config and put it to spring's environment, using
+ * given [name] (optional).
+ */
+fun SpringContextConfiguration.useHoconPropertySource(name: String, hocon: Config) {
     additionalActions {
-        environment.propertySources.addFirst(HoconPropertySource.buildPropertySourceFrom(name, hoconConf))
+        environment.propertySources.addFirst(HoconPropertySource.buildPropertySourceFrom(name, hocon))
     }
 }
 
+/**
+ * Build a property source from a HOCON file by given [resource] and put it to spring's environment, using
+ * given [name] (optional).
+ */
 fun SpringContextConfiguration.useHoconPropertySource(name: String?, resource: Resource) {
     additionalActions {
         environment.propertySources.addFirst(HoconPropertySource.buildPropertySourceFrom(name, EncodedResource(resource, "UTF8")))
