@@ -130,6 +130,7 @@
                 <configuration>
                     <serverId>shinonometn-public</serverId>
                     <nexusUrl>https://nexus.shinonometn.com/</nexusUrl>
+                    <!-- See: https://github.com/sonatype/nexus-maven-plugins/blob/master/staging/maven-plugin/WORKFLOWS.md -->
                     <skipStaging>true</skipStaging>
                 </configuration>
             </plugin>
