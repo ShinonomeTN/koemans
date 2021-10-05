@@ -11,10 +11,6 @@
 
     <artifactId>koemans-web-ktor</artifactId>
 
-    <properties>
-        <ktor.version>1.5.3</ktor.version>
-    </properties>
-
     <dependencies>
 
         <dependency>
@@ -23,10 +19,15 @@
             <version>${ktor.version}</version>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>io.ktor</groupId>-->
+<!--            <artifactId>ktor-server-netty</artifactId>-->
+<!--            <version>${ktor.version}</version>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>io.ktor</groupId>
-            <artifactId>ktor-server-netty</artifactId>
-            <version>${ktor.version}</version>
+            <artifactId>ktor-server-test-host</artifactId>
         </dependency>
     </dependencies>
 
