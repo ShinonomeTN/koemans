@@ -4,22 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.shinonometn</groupId>
-    <artifactId>koemans</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>koemans-utils</module>
-        <module>koemans-web-ktor</module>
-        <module>koemans-exposed</module>
-        <module>koemans-coroutine</module>
-        <module>koemans-web-spring</module>
-        <module>koemans-event-hub</module>
-    </modules>
-
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+
+        <koemans.pom.version>1.0</koemans.pom.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlinx.coroutine.version>1.4.3</kotlinx.coroutine.version>
@@ -28,11 +17,31 @@
 
         <ktor.version>1.5.3</ktor.version>
 
+        <exposed.version>0.30.1</exposed.version>
+
         <spring.context.version>5.3.7</spring.context.version>
 
         <!--  No, we don't need style recommendations -->
         <!-- <kotlin.code.style>official</kotlin.code.style>-->
     </properties>
+
+    <groupId>com.shinonometn</groupId>
+    <artifactId>koemans</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+
+    <modules>
+        <module>koemans-utils</module>
+        <module>koemans-web-ktor</module>
+
+        <module>koemans-exposed</module>
+        <module>koemans-exposed-database</module>
+
+        <module>koemans-coroutine</module>
+        <module>koemans-web-spring</module>
+        <module>koemans-event-hub</module>
+        <module>koemans-exposed-database-sqlite3</module>
+    </modules>
 
     <dependencies>
         <dependency>
@@ -102,7 +111,9 @@
 
             <!--  Skip the default deploy plugin  -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0-M1</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
