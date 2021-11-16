@@ -68,4 +68,7 @@ class Page<T>(val offset: Long, val size: Long, val total: Long, val hasNext: Bo
     fun <R> convert(converter: (T) -> R): Page<R> {
         return Page(offset, size, total, hasNext, content.map(converter))
     }
+
+    val isEmpty : Boolean
+        get() = content.isEmpty()
 }
