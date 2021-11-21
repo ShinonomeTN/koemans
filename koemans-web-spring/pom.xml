@@ -13,8 +13,6 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
         <ktor.version>1.5.3</ktor.version>
     </properties>
 
