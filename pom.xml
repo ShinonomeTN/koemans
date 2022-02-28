@@ -41,6 +41,7 @@
         <module>koemans-web-spring</module>
         <module>koemans-event-hub</module>
         <module>koemans-exposed-database-sqlite3</module>
+        <module>koemans-all</module>
     </modules>
 
     <dependencies>
