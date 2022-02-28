@@ -4,12 +4,16 @@ import com.shinonometn.koemans.eventhub.message.MessageComposeMethod
 import com.shinonometn.koemans.eventhub.message.SimpleMessagePayload
 import com.shinonometn.koemans.eventhub.message.SimpleMessagePayloadComposer
 import com.shinonometn.koemans.eventhub.message.new
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 
 private typealias Composer<T> = SimpleMessagePayloadComposer<T>
 private typealias Payload<T> = SimpleMessagePayload<T>
 
-class SimpleMessageEventHub : SimpleEventHub<Composer<*>, Payload<*>>() {
+class SimpleMessageEventHub(
+    override val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined)
+) : SimpleEventHub<Composer<*>, Payload<*>>() {
 
     @Suppress("UNCHECKED_CAST")
     fun <TContext> subscribe(

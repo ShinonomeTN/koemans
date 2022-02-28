@@ -35,7 +35,8 @@ class FilterOptionMapping internal constructor(val config : Configuration){
             config.mapping[it]!!.invoke(SqlExpressionBuilder, ValueWrapper(it, params))
         }
 
-        val op = config.expression(SqlExpressionBuilder, fragments)
+        val op = if(fragments.isNotEmpty()) Op.TRUE else // Fix problem with empty filter
+            config.expression(SqlExpressionBuilder, fragments)
 
         return FilterRequest(op, keys)
     }

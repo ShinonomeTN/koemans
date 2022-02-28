@@ -179,6 +179,9 @@
                             </goals>
                         </execution>
                     </executions>
+                    <configuration>
+                        <jvmTarget>${maven.compiler.target}</jvmTarget>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
