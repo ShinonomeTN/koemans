@@ -8,8 +8,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <koemans.pom.version>1.0</koemans.pom.version>
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlinx.coroutine.version>1.4.3</kotlinx.coroutine.version>
         <kotlin.version>1.4.20</kotlin.version>

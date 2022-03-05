@@ -10,7 +10,7 @@ class Sqlite3Test {
     fun `Test open database`() {
         val sqlite3 = sqlDatabase(Sqlite3) {
             inMemory("test_database")
-            poolingStrategy = HikariPooling
+            poolingStrategy = HikariPooling()
         }
 
         sqlite3 {
@@ -22,6 +22,19 @@ class Sqlite3Test {
             exec("select text from tb_test") {
                 assertTrue("It should have at least 1 record.",it.next())
                 assertTrue("Record content should be 'Hello World'.",it.getString(1) == "Hello world")
+            }
+        }
+    }
+
+    @Test
+    fun `Test open database 2`() {
+        sqlDatabase(Sqlite3) {
+            inMemory("test_database")
+            poolingStrategy = HikariPooling {
+                it.connectionTimeout = 1000
+                it.idleTimeout = 1000
+                it.maxLifetime = 1000
+                it.maximumPoolSize = 1
             }
         }
     }
