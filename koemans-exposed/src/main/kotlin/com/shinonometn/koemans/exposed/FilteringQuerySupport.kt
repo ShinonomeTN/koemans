@@ -12,6 +12,7 @@ class FilterRequest internal constructor(internal var op : Op<Boolean>, val para
 }
 
 fun FieldSet.selectBy(filterRequest: FilterRequest, additionalBuilder : (SqlExpressionBuilder.(Op<Boolean>) -> Op<Boolean>)? = null) : Query {
+    if(filterRequest.parameters.isEmpty()) return selectAll()
     return additionalBuilder?.let { select { additionalBuilder(this, filterRequest.op)} } ?: select(filterRequest.op)
 }
 

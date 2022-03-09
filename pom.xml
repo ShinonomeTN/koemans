@@ -108,6 +108,7 @@
                 <version>3.8.1</version>
             </plugin>
 
+            <!-- See: https://stackoverflow.com/questions/5726291/updating-version-numbers-of-modules-in-a-multi-module-maven-project -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
