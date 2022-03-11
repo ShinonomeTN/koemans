@@ -30,4 +30,29 @@ class ValidatorTest {
 
         validator.validate(params)
     }
+
+    @Test(expected = ParamValidationException::class)
+    fun `Test disallow unknown param`() {
+        val validator = Validator {
+            "users" with isString
+            // default value is false
+//            allowUnknownParams = false
+        }
+
+        val params = parametersOf("users" to listOf("1"), "unknown" to listOf("2"))
+
+        validator.validate(params)
+    }
+
+    @Test
+    fun `Test allow unknown param`() {
+        val validator = Validator {
+            "name" with isString
+            allowUnknownParams = true
+        }
+
+        val params = parametersOf("name" to listOf("1"), "unknown" to listOf("2"))
+
+        validator.validate(params)
+    }
 }

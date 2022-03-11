@@ -30,6 +30,7 @@ class Validator internal constructor(private val policy: Policy, private val con
         val validatorMap = HashMap<String, MutableList<ValidationHandler>>()
         val nullTable = HashMap<String, Boolean>()
         var showValueWhenFailed = true
+        var allowUnknownParams = false
 
         companion object {
             private val isStringValidator = ValidationHandler({ it is String }, "invalid_value")
@@ -155,6 +156,13 @@ class Validator internal constructor(private val policy: Policy, private val con
 
     fun validate(parameters: Parameters, policy: Policy = this.policy): Parameters {
         val validators = config.validatorMap
+
+        if(!config.allowUnknownParams) {
+            parameters.forEach { k, _ ->
+                if(!validators.keys.contains(k)) throw ParamValidationException("param_unknown_param:$k")
+            }
+        }
+
         validators.forEach { (key, validators) ->
             with(policy) {
                 validators.policy(key, parameters, config)
