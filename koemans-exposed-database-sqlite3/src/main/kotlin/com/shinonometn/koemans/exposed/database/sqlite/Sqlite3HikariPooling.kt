@@ -5,7 +5,9 @@ package com.shinonometn.koemans.exposed.database.sqlite
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.Database
+import javax.sql.DataSource
 
+@Deprecated("Use 'HikariDatasource {}' instead")
 fun Sqlite3.Configuration.HikariPooling(hikariConfigurator : (HikariConfig) -> Unit) : Sqlite3.Configuration.() -> Database {
     val hikariConfig = HikariConfig().apply(hikariConfigurator)
 
@@ -16,6 +18,7 @@ fun Sqlite3.Configuration.HikariPooling(hikariConfigurator : (HikariConfig) -> U
 }
 
 @Suppress("unused")
+@Deprecated("Use 'HikariDatasource()' instead")
 fun Sqlite3.Configuration.HikariPooling() : Sqlite3.Configuration.() -> Database = {
     val hikariConfig = HikariConfig().apply {
         poolName = "Hikari-Sqlite3-${name}"
@@ -31,4 +34,27 @@ fun Sqlite3.Configuration.HikariPooling() : Sqlite3.Configuration.() -> Database
 @Deprecated("Use HikariPooling() instead")
 val Sqlite3.Configuration.HikariPooling by lazy<Sqlite3.Configuration.() -> Database> {
     { HikariPooling().invoke(this) }
+}
+
+@Suppress("unused")
+fun Sqlite3.Configuration.HikariDatasource(hikariConfigurator: (HikariConfig) -> Unit) : Sqlite3.Configuration.(String) -> DataSource = {
+    val hikariConfig = HikariConfig().apply(hikariConfigurator)
+
+    hikariConfig.jdbcUrl = it
+    hikariConfig.driverClassName = Sqlite3.DriverClassName
+
+    HikariDataSource(hikariConfig)
+}
+
+@Suppress("unused")
+fun Sqlite3.Configuration.HikariDatasource() : Sqlite3.Configuration.(String) -> DataSource = {
+    val hikariConfig = HikariConfig().apply {
+        poolName = "Hikari-Sqlite3-${name}"
+        driverClassName = Sqlite3.DriverClassName
+        jdbcUrl = it
+        minimumIdle = 1
+        maximumPoolSize = 1
+    }
+
+    HikariDataSource(hikariConfig)
 }
