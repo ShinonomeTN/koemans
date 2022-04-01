@@ -26,7 +26,7 @@ class ValidatorTest {
             "users" with isStringList { it.all { u -> u.isNotBlank() } }
         }
 
-        val params = parametersOf("users" to listOf("1", "2", "3"))
+        val params = parseQueryString("users=1&users=2&users=3")
 
         validator.validate(params)
     }
