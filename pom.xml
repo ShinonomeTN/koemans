@@ -109,6 +109,9 @@
             </plugin>
 
             <!-- See: https://stackoverflow.com/questions/5726291/updating-version-numbers-of-modules-in-a-multi-module-maven-project -->
+            <!-- mvn versions:set -DnewVersion=2.50.1-SNAPSHOT -->
+            <!-- mvn versions:revert -->
+            <!-- mvn versions:commit -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
