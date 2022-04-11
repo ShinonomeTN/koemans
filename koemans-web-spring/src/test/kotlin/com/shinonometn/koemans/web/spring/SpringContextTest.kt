@@ -55,6 +55,7 @@ class TestRouteConfigClass(private val config: TestApplicationAutoConfiguration)
 fun Application.mainTestModule() {
     install(SpringContext) {
         annotationDriven(TestApplicationAutoConfiguration::class.java) {
+            propertySourcePlaceholderSupport()
             useHoconPropertySource(null, ClassPathResource("application.hocon"))
         }
     }
