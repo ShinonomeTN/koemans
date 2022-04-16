@@ -5,18 +5,18 @@
     <parent>
         <artifactId>koemans</artifactId>
         <groupId>com.shinonometn</groupId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>koemans-exposed-database-sqlite3</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
 
     <dependencies>
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-exposed-database</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.1</version>
         </dependency>
 
         <!--compile group: 'org.xerial', name: 'sqlite-jdbc', version:'3.34.0'-->
