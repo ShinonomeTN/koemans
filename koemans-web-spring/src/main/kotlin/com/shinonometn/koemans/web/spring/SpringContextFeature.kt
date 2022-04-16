@@ -35,13 +35,12 @@ class SpringContext(configuration: Configuration) {
                 val c = AnnotationConfigApplicationContext()
                 c.register(autoConfigClazz)
 
+                val springConfig = SpringContextConfiguration()
+                configure?.let { springConfig.it() }
+                springConfig.applyOn(c)
+
                 ktorApplication = this
                 applicationContext = c
-
-                configure?.let {
-                    val conf = SpringContextConfiguration().apply { it() }
-                    conf.applyOn(c)
-                }
 
                 c.refresh()
 
@@ -55,15 +54,16 @@ class SpringContext(configuration: Configuration) {
         fun Application.annotationDriven(vararg packages: String, configure: (SpringContextConfiguration.() -> Unit)? = null) {
 
             val c = AnnotationConfigApplicationContext()
+            val springConfig = SpringContextConfiguration()
 
             ktorApplication = this
 
             applicationContext = c
 
-            val contextConfig = configure?.let { SpringContextConfiguration().apply { it() } }
-
             c.scan(*packages)
-            contextConfig?.run { applyOn(c) }
+
+            springConfig.applyOn(c)
+
             c.refresh()
 
             whenApplicationStart = { c.start() }
@@ -108,7 +108,13 @@ class SpringContextConfiguration internal constructor() {
 
     fun additionalActions(action : GenericApplicationContext.() -> Unit) = additionalActions.add(action)
 
-    internal fun applyOn(context: GenericApplicationContext) = additionalActions.forEach { context.it() }
+    internal fun applyOn(context: GenericApplicationContext) {
+        val actions = additionalActions.toList()
+
+        logger.info("Applying {} additional context configuration actions.", actions.size)
+
+        actions.forEach { context.it() }
+    }
 
     inline fun <reified T> registerBean(name: String, bean: T): SpringContextConfiguration {
         additionalActions { registerBean(name, bean!!::class.java, { bean }) }
