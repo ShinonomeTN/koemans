@@ -52,16 +52,16 @@ or just pull and install it via `mvn`.
 You can just import the hole Koemans:
 
 ```groovy
-implementation("org.shinonometn:koemans-all:1.1-SNAPSHOT")
+implementation("org.shinonometn:koemans-all:1.1")
 ```
 
 or jus some modules.
 
 ```groovy
 // Exposed supports only
-implementation("org.shinonometn:koemans-exposed:1.1-SNAPSHOT")
-implementation("org.shinonometn:koemans-exposed-database:1.1-SNAPSHOT")
-implementation("org.shinonometn:koemans-exposed-database-sqlite3:1.1-SNAPSHOT")
+implementation("org.shinonometn:koemans-exposed:1.1")
+implementation("org.shinonometn:koemans-exposed-database:1.1")
+implementation("org.shinonometn:koemans-exposed-database-sqlite3:1.1")
 ```
 
 ### Create a simple application with spring context
