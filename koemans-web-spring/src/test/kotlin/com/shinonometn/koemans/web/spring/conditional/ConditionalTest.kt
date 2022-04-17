@@ -5,7 +5,6 @@ import com.shinonometn.koemans.web.spring.find
 import org.junit.Test
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.beans.factory.config.BeanExpressionContext
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.expression.StandardBeanExpressionResolver
 import org.springframework.core.io.ClassPathResource

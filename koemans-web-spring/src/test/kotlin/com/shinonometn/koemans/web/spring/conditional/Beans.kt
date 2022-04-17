@@ -4,12 +4,18 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.stereotype.Component
 
+private val logger = LoggerFactory.getLogger(ConditionalTest::class.java)
+
 @Component
 @WithConditionOnBean(TestConditionalBeanNotExists::class)
 class TestConditionalOnBeanNotLoaded
 
 @Component
-class TestConditionalOnBeanDependency
+class TestConditionalOnBeanDependency {
+    init {
+        logger.info("TestConditionalOnBeanDependency is loaded")
+    }
+}
 
 @Component
 @WithConditionOnBean(TestConditionalOnBeanDependency::class)
@@ -22,8 +28,6 @@ class TestConditionalBeanNotExists
 @WithConditionExpression("\${test.value3:false}")
 @Component
 class TestConditionalBeanExists {
-    private val logger = LoggerFactory.getLogger(TestConditionalBeanExists::class.java)
-
     init {
         logger.info("TestConditionalBeanExists is created")
     }

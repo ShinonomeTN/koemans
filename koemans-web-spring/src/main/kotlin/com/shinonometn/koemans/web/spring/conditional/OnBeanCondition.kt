@@ -15,6 +15,8 @@ class OnBeanCondition : Condition {
         val beanClasses = (metadata.getAnnotationAttributes(WithConditionOnBean::class.java.name)!!["value"] as Array<*>)
             .filterIsInstance(Class::class.java)
 
+        logger.debug("Checking if the current context has the bean classes: ${beanClasses.joinToString(","){ it.name }}")
+        
         val beanFactory = context.beanFactory ?: return run {
             logger.warn(
                 "Could not evaluate @OnBeanCondition for [{}] due to no BeanFactory.",
