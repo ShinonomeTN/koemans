@@ -1,4 +1,6 @@
 test {
     value = 86400
     value2= ${test.value}
+    value3 = true
+    value4 = false
 }
