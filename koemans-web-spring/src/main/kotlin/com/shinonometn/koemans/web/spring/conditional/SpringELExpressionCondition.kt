@@ -13,7 +13,7 @@ import org.springframework.core.type.AnnotatedTypeMetadata
  * Reference: [org.springframework.boot.autoconfigure.condition.ConditionalOnExpression]
  */
 @Order(Ordered.LOWEST_PRECEDENCE - 20)
-class ExpressionConfigurationCondition : Condition {
+class SpringELExpressionCondition : Condition {
     private val logger = LoggerFactory.getLogger("SpringContext.Conditional")
 
     override fun matches(context: ConditionContext, metadata: AnnotatedTypeMetadata): Boolean {

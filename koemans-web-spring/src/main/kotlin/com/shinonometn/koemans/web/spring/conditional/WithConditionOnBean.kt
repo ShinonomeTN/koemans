@@ -1,9 +1,9 @@
 package com.shinonometn.koemans.web.spring.conditional
 
-import org.intellij.lang.annotations.Language
 import org.springframework.context.annotation.Conditional
+import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-@Conditional(SpringELExpressionCondition::class)
-annotation class WithConditionExpression(@Language("SpEL") val value: String)
+@Conditional(OnBeanCondition::class)
+annotation class WithConditionOnBean(vararg val value: KClass<*>)
