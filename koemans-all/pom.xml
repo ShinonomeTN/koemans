@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>koemans-all</artifactId>
-    <version>1.1</version>
+    <version>1.1.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-web-spring</artifactId>
-            <version>1.1</version>
+            <version>1.1.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
