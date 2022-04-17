@@ -45,6 +45,18 @@ class ConditionalTest {
     }
 
     @Test
+    fun `Test conditional on bean`() {
+        val context = createSpringContext()
+        context.find<TestConditionalOnBean>()
+    }
+
+    @Test(expected = NoSuchBeanDefinitionException::class)
+    fun `Test conditional on bean not found`() {
+        val context = createSpringContext()
+        context.find<TestConditionalOnBeanNotLoaded>()
+    }
+
+    @Test
     fun `Test evaluation 1`() {
         val context = createEmptyContext()
         val resolver = context.beanFactory.beanExpressionResolver ?: StandardBeanExpressionResolver()
