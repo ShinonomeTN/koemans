@@ -13,6 +13,7 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
+import kotlin.test.assertTrue
 
 @ComponentScan("com.shinonometn.koemans.web.spring")
 open class TestApplicationAutoConfiguration {
@@ -51,6 +52,9 @@ class TestRouteConfigClass(private val config: TestApplicationAutoConfiguration)
         }
     }
 }
+
+@Component
+class TestPropertySourcePlaceHolder(@Value("\${application.number}") val number : Int)
 
 fun Application.mainTestModule() {
     install(SpringContext) {
@@ -101,6 +105,14 @@ class SpringContextTest {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertEquals("Application Title: Hello world app", response.content)
             }
+        }
+    }
+
+    @Test
+    fun `Test property source place holder`() {
+        withTestApplication(Application::mainTestModule) {
+            val test = application.springContext.find<TestPropertySourcePlaceHolder>()
+            assertTrue(test.number == 1, "number should equals to 1")
         }
     }
 }

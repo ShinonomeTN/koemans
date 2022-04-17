@@ -1,4 +1,5 @@
 application {
     title = "Hello world app"
     description = "Sample application configuration"
+    number = 1
 }

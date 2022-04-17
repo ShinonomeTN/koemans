@@ -33,19 +33,16 @@ class SpringContext(configuration: Configuration) {
 
             val time = timing {
                 val c = AnnotationConfigApplicationContext()
-                c.register(autoConfigClazz)
-
                 val springConfig = SpringContextConfiguration()
                 configure?.let { springConfig.it() }
                 springConfig.applyOn(c)
+
+                c.register(autoConfigClazz)
 
                 ktorApplication = this
                 applicationContext = c
 
                 c.refresh()
-
-                whenApplicationStart = { c.start() }
-                whenApplicationClose = { c.close() }
             }
 
             logger.info("Spring context initialized in {}ms.", time)
@@ -55,6 +52,8 @@ class SpringContext(configuration: Configuration) {
 
             val c = AnnotationConfigApplicationContext()
             val springConfig = SpringContextConfiguration()
+            configure?.let { springConfig.it() }
+            springConfig.applyOn(c)
 
             ktorApplication = this
 
@@ -62,12 +61,7 @@ class SpringContext(configuration: Configuration) {
 
             c.scan(*packages)
 
-            springConfig.applyOn(c)
-
             c.refresh()
-
-            whenApplicationStart = { c.start() }
-            whenApplicationClose = { c.close() }
         }
     }
 
@@ -82,12 +76,14 @@ class SpringContext(configuration: Configuration) {
 
             val application = feature.ktorApplication
 
+            feature.context.start()
             feature.contextStartAction()
             logger.info("Spring context started.")
 
             application.environment.monitor.let { e ->
                 e.subscribe(ApplicationStopped) {
                     logger.info("Closing Spring context.")
+                    feature.context.close()
                     feature.contextCloseAction()
                 }
             }
@@ -106,6 +102,10 @@ private fun timing(task: () -> Unit): Long {
 class SpringContextConfiguration internal constructor() {
     private val additionalActions = LinkedList<GenericApplicationContext.() -> Unit>()
 
+    /**
+     * Additional Actions to Spring Context
+     * It will execute before the context start to scan and load.
+     */
     fun additionalActions(action : GenericApplicationContext.() -> Unit) = additionalActions.add(action)
 
     internal fun applyOn(context: GenericApplicationContext) {
