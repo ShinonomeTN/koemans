@@ -14,13 +14,8 @@ class MariaDB(val name: String, override val db: Database, override val datasour
 
         override val supportUsernamePassword = true
 
-        fun username(string : String) {
-            username = string
-        }
-
-        fun password(string : String) {
-            password = string
-        }
+        public override var username : String? = ""
+        public override var password: String? = ""
 
         private val urlParams = UrlQueryParameter()
         fun parameters(builder: UrlQueryParameter.() -> Unit) {
@@ -28,12 +23,12 @@ class MariaDB(val name: String, override val db: Database, override val datasour
         }
 
         private var hostInfo: String = "127.0.0.1:3306"
-        private var database: String? = null
 
-        fun database(name: String) {
-            this.database = name
-            this.name = name
-        }
+        var database: String? = null
+            set(value) {
+                field = value
+                this.name = value ?: ""
+            }
 
         fun localhost() {
             hostInfo = "jdbc:mariadb://127.0.0.1:3306/"
@@ -46,7 +41,7 @@ class MariaDB(val name: String, override val db: Database, override val datasour
         }
 
         private fun buildUrl(): String {
-            val database = this.database ?: error("Please provide database name by dsl 'database()'.")
+            val database = this.database ?: error("Please provide database name.")
             val url = "jdbc:mariadb://$hostInfo/$database"
             return if (urlParams.isNotEmpty()) "$url?${urlParams.toUrlEncoded()}" else url
         }

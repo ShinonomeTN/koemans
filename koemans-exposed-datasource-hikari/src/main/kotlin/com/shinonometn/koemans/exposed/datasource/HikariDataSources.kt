@@ -16,8 +16,8 @@ import javax.sql.DataSource
 @Suppress("unused")
 fun SqlDatabaseConfiguration.HikariDatasource(hikariConfigurator: HikariConfig.() -> Unit): SqlDatabaseConfiguration.() -> DataSource = {
     val driverClassName = driverClassName
-    val username = username ?: ""
-    val password = password ?: ""
+    val username = username
+    val password = password
 
     val hikariConfig = HikariConfig().apply {
         poolName = "Hikari-${databaseTypeName}-${name}"
