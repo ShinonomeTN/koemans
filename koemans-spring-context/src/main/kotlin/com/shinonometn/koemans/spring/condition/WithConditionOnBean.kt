@@ -1,4 +1,4 @@
-package com.shinonometn.koemans.web.spring.conditional
+package com.shinonometn.koemans.spring.condition
 
 import org.springframework.context.annotation.Conditional
 import kotlin.reflect.KClass

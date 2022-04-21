@@ -1,4 +1,4 @@
-package com.shinonometn.koemans.web.spring.conditional
+package com.shinonometn.koemans.spring.condition
 
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.config.BeanExpressionContext

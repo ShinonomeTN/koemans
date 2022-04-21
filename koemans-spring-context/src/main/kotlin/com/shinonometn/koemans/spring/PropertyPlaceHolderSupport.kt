@@ -1,4 +1,4 @@
-package com.shinonometn.koemans.web.spring
+package com.shinonometn.koemans.spring
 
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 

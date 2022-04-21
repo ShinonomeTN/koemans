@@ -1,7 +1,6 @@
-package com.shinonometn.koemans.web.spring.conditional
+package com.shinonometn.koemans.spring.condition
 
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Condition
 import org.springframework.context.annotation.ConditionContext
 import org.springframework.context.annotation.ConfigurationCondition
 import org.springframework.core.Ordered

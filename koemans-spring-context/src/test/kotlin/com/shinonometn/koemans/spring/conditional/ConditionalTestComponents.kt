@@ -1,5 +1,7 @@
-package com.shinonometn.koemans.web.spring.conditional
+package com.shinonometn.koemans.spring.conditional
 
+import com.shinonometn.koemans.spring.condition.WithConditionExpression
+import com.shinonometn.koemans.spring.condition.WithConditionOnBean
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.stereotype.Component
@@ -33,7 +35,7 @@ class TestConditionalBeanExists {
     }
 }
 
-@ComponentScan("com.shinonometn.koemans.web.spring.conditional")
+@ComponentScan("com.shinonometn.koemans.spring.conditional")
 open class ConditionalTestAutoConfiguration {
     private val logger = LoggerFactory.getLogger("ConditionalTestAutoConfiguration")
 

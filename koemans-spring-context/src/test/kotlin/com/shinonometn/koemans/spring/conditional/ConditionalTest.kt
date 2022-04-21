@@ -1,14 +1,15 @@
-package com.shinonometn.koemans.web.spring.conditional
+package com.shinonometn.koemans.spring.conditional
 
-import com.shinonometn.koemans.web.spring.HoconPropertySource
-import com.shinonometn.koemans.web.spring.find
+import com.shinonometn.koemans.spring.annotationDrivenApplicationContext
+import com.shinonometn.koemans.spring.find
+import com.shinonometn.koemans.spring.propertySourcePlaceholderSupport
+import com.shinonometn.koemans.spring.useHoconPropertySource
 import org.junit.Test
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.beans.factory.config.BeanExpressionContext
-import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.expression.StandardBeanExpressionResolver
+import org.springframework.context.support.GenericApplicationContext
 import org.springframework.core.io.ClassPathResource
-import org.springframework.core.io.support.EncodedResource
 import org.springframework.expression.spel.standard.SpelExpressionParser
 import org.springframework.expression.spel.support.StandardEvaluationContext
 import kotlin.test.assertNotNull
@@ -16,28 +17,20 @@ import kotlin.test.assertTrue
 
 class ConditionalTest {
 
-    private fun createSpringContext(): AnnotationConfigApplicationContext {
-        val context = AnnotationConfigApplicationContext()
-        context.environment.propertySources.addFirst(
-            HoconPropertySource.buildPropertySourceFrom(
-                "conditional",
-                EncodedResource(ClassPathResource("conditional.hocon"), "UTF8")
-            )
-        )
-        context.register(ConditionalTestAutoConfiguration::class.java)
-        context.refresh()
+    private fun createSpringContext(): GenericApplicationContext {
+        val context = annotationDrivenApplicationContext(ConditionalTestAutoConfiguration::class.java) {
+            propertySourcePlaceholderSupport()
+            useHoconPropertySource("conditional", ClassPathResource("conditional.conf"))
+        }
         context.start()
         return context
     }
 
-    private fun createEmptySpringContext(): AnnotationConfigApplicationContext {
-        val context = AnnotationConfigApplicationContext()
-        context.environment.propertySources.addFirst(
-            HoconPropertySource.buildPropertySourceFrom(
-                "conditional",
-                EncodedResource(ClassPathResource("conditional.hocon"), "UTF8")
-            )
-        )
+    private fun createEmptySpringContext(): GenericApplicationContext {
+        val context = annotationDrivenApplicationContext {
+            propertySourcePlaceholderSupport()
+            useHoconPropertySource("conditional", ClassPathResource("conditional.conf"))
+        }
         context.refresh()
         context.start()
         return context

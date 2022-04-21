@@ -1,4 +1,4 @@
-package com.shinonometn.koemans.web.spring
+package com.shinonometn.koemans.spring
 
 import com.typesafe.config.*
 import org.springframework.core.env.MapPropertySource
@@ -9,14 +9,12 @@ import org.springframework.core.io.support.PropertySourceFactory
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
-private val PARSE_OPTION = ConfigParseOptions.defaults().apply {
-    syntax = ConfigSyntax.CONF
-}
+private val DefaultParseOptions = ConfigParseOptions.defaults().setSyntax(ConfigSyntax.CONF)
 
-private fun parseHoconFrom(resource: Resource): Config {
+private fun parseHoconFrom(resource: Resource, parseOptions: ConfigParseOptions): Config {
     return resource.inputStream.use { inputStream ->
         InputStreamReader(inputStream, StandardCharsets.UTF_8).use { reader ->
-            ConfigFactory.parseReader(reader, PARSE_OPTION).resolve()
+            ConfigFactory.parseReader(reader, parseOptions).resolve()
         }
     }
 }
@@ -66,7 +64,7 @@ private fun processScalarValue(properties: MutableMap<String, Any>, key: String,
 
 class HoconPropertySource : PropertySourceFactory {
     override fun createPropertySource(name: String?, encoded: EncodedResource): PropertySource<*> {
-        return buildPropertySourceFrom(name, encoded)
+        return buildPropertySourceFrom(name, encoded, DefaultParseOptions)
     }
 
     companion object {
@@ -74,10 +72,10 @@ class HoconPropertySource : PropertySourceFactory {
             return MapPropertySource(name, toFlatMap(config))
         }
 
-        fun buildPropertySourceFrom(name: String?, encoded: EncodedResource): PropertySource<*> {
+        fun buildPropertySourceFrom(name: String?, encoded: EncodedResource, parseOptions: ConfigParseOptions = DefaultParseOptions): PropertySource<*> {
             val resource = encoded.resource
             val realName = name ?: resource.filename
-            return MapPropertySource(realName, toFlatMap(parseHoconFrom(resource)))
+            return MapPropertySource(realName, toFlatMap(parseHoconFrom(resource, parseOptions)))
         }
     }
 }
@@ -96,9 +94,8 @@ fun SpringContextConfiguration.useHoconPropertySource(name: String, hocon: Confi
  * Build a property source from a HOCON file by given [resource] and put it to spring's environment, using
  * given [name] (optional).
  */
-fun SpringContextConfiguration.useHoconPropertySource(name: String?, resource: Resource) {
+fun SpringContextConfiguration.useHoconPropertySource(name: String?, resource: Resource, parseOptions: ConfigParseOptions = DefaultParseOptions) {
     additionalActions {
-        environment.propertySources.addFirst(HoconPropertySource.buildPropertySourceFrom(name, EncodedResource(resource, "UTF8")))
+        environment.propertySources.addFirst(HoconPropertySource.buildPropertySourceFrom(name, EncodedResource(resource, "UTF8"), parseOptions))
     }
 }
-

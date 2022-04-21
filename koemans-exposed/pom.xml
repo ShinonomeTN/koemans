@@ -14,11 +14,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib-jdk8</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-utils</artifactId>
             <version>1.1</version>

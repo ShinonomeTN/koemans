@@ -13,7 +13,6 @@
     <version>1.1.1-SNAPSHOT</version>
 
     <dependencies>
-
         <dependency>
             <groupId>io.ktor</groupId>
             <artifactId>ktor-server-core</artifactId>
@@ -21,15 +20,15 @@
         </dependency>
 
         <dependency>
-            <groupId>io.ktor</groupId>
-            <artifactId>ktor-server-netty</artifactId>
-            <version>${ktor.version}</version>
+            <groupId>com.shinonometn</groupId>
+            <artifactId>koemans-utils</artifactId>
+            <version>1.1</version>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.context.version}</version>
+            <groupId>com.shinonometn</groupId>
+            <artifactId>koemans-spring-context</artifactId>
+            <version>1.1.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -39,9 +38,6 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>src/main/kotlin</sourceDirectory>
-        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
-
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>

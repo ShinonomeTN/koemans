@@ -1,10 +1,11 @@
 package com.shinonometn.koemans.web.spring
 
+import com.shinonometn.koemans.spring.SpringContextConfiguration
+import com.shinonometn.koemans.spring.annotationDrivenApplicationContext
 import io.ktor.application.*
 import io.ktor.util.*
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
-import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.GenericApplicationContext
 import java.util.*
 import java.util.function.Supplier
@@ -34,21 +35,16 @@ class SpringContext(configuration: Configuration) {
             beforeContextClose = b
         }
 
-        private fun annotationContext(configure: (SpringContextConfiguration.() -> Unit)?) = AnnotationConfigApplicationContext().apply {
-            registerBean(Application::class.java, Supplier { ktorApplication })
-            SpringContextConfiguration(configure).applyOn(this)
-        }
-
         fun Application.annotationDriven(autoConfigClazz: Class<*>, configure: (SpringContextConfiguration.() -> Unit)? = null) {
             logger.info("Initializing Spring context.")
 
             val time = timing {
                 ktorApplication = this
 
-                val c = annotationContext(configure)
-                applicationContext = c
-                c.register(autoConfigClazz)
-                c.refresh()
+                applicationContext = annotationDrivenApplicationContext(autoConfigClazz) {
+                    registerBean(Supplier { ktorApplication })
+                    configure?.invoke(this)
+                }
             }
 
             logger.info("Spring context initialized in {}ms.", time)
@@ -57,11 +53,14 @@ class SpringContext(configuration: Configuration) {
         fun Application.annotationDriven(vararg packages: String, configure: (SpringContextConfiguration.() -> Unit)? = null) {
             ktorApplication = this
 
-            val c = annotationContext(configure)
-            applicationContext = c
+            val time = timing {
+                applicationContext = annotationDrivenApplicationContext(*packages) {
+                    registerBean(Supplier { ktorApplication })
+                    configure?.invoke(this)
+                }
+            }
 
-            c.scan(*packages)
-            c.refresh()
+            logger.info("Spring context initialized in {}ms.", time)
         }
     }
 
@@ -100,41 +99,5 @@ private fun timing(task: () -> Unit): Long {
     return System.currentTimeMillis() - start
 }
 
-class SpringContextConfiguration internal constructor(builder: (SpringContextConfiguration.() -> Unit)? = null) {
-    private val additionalActions = LinkedList<GenericApplicationContext.() -> Unit>()
-
-    init {
-        builder?.invoke(this)
-    }
-
-    /**
-     * Additional Actions to Spring Context
-     * It will execute before the context start to scan and load.
-     */
-    fun additionalActions(action: GenericApplicationContext.() -> Unit) = additionalActions.add(action)
-
-    internal fun applyOn(context: GenericApplicationContext) {
-        val actions = additionalActions.toList()
-
-        SpringContext.logger.info("Applying {} additional context configuration actions.", actions.size)
-
-        actions.forEach { context.it() }
-    }
-
-    inline fun <reified T> registerBean(name: String, bean: T): SpringContextConfiguration {
-        additionalActions { registerBean(name, bean!!::class.java, { bean }) }
-        return this
-    }
-
-    inline fun <reified T> registerBean(bean: T): SpringContextConfiguration {
-        additionalActions { registerBean(T::class.java, { bean }) }
-        return this
-    }
-}
-
 val Application.springContext: ApplicationContext
     get() = feature(SpringContext).context
-
-inline fun <reified T> ApplicationContext.find(): T = getBean(T::class.java)
-
-inline fun <reified T> ApplicationContext.find(name: String): T = getBean(name, T::class.java)
