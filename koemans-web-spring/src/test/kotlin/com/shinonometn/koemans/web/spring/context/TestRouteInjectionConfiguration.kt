@@ -1,7 +1,7 @@
 package com.shinonometn.koemans.web.spring.context
 
-import com.shinonometn.koemans.web.spring.RouteGroup
-import com.shinonometn.koemans.web.spring.RouteProvider
+import com.shinonometn.koemans.web.spring.route.RouteGroup
+import com.shinonometn.koemans.web.spring.route.RouteProvider
 import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.routing.*

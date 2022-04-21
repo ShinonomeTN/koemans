@@ -7,8 +7,7 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.GenericApplicationContext
 import java.util.*
-
-private val logger = LoggerFactory.getLogger("SpringContext")
+import java.util.function.Supplier
 
 class SpringContext(configuration: Configuration) {
     val context: GenericApplicationContext = configuration.applicationContext
@@ -16,8 +15,8 @@ class SpringContext(configuration: Configuration) {
 
     internal val ktorApplication = configuration.ktorApplication!!
 
-    internal val contextStartAction = configuration.whenApplicationStart
-    internal val contextCloseAction = configuration.whenApplicationClose
+    internal val afterContextStart = configuration.afterContextStart
+    internal val beforeContextClose = configuration.beforeContextClose
 
     class Configuration {
         internal var ktorApplication: Application? = null
@@ -25,23 +24,30 @@ class SpringContext(configuration: Configuration) {
         internal var applicationContext: GenericApplicationContext? = null
             private set
 
-        internal var whenApplicationStart: () -> Unit = {}
-        internal var whenApplicationClose: () -> Unit = {}
+        internal var afterContextStart: (SpringContext) -> Unit = {}
+        fun afterContextStart(b: (SpringContext) -> Unit) {
+            afterContextStart = b
+        }
+
+        internal var beforeContextClose: (SpringContext) -> Unit = {}
+        fun beforeContextClose(b: (SpringContext) -> Unit) {
+            beforeContextClose = b
+        }
+
+        private fun annotationContext(configure: (SpringContextConfiguration.() -> Unit)?) = AnnotationConfigApplicationContext().apply {
+            registerBean(Application::class.java, Supplier { ktorApplication })
+            SpringContextConfiguration(configure).applyOn(this)
+        }
 
         fun Application.annotationDriven(autoConfigClazz: Class<*>, configure: (SpringContextConfiguration.() -> Unit)? = null) {
             logger.info("Initializing Spring context.")
 
             val time = timing {
-                val c = AnnotationConfigApplicationContext()
-                val springConfig = SpringContextConfiguration()
-                configure?.let { springConfig.it() }
-                springConfig.applyOn(c)
-
-                c.register(autoConfigClazz)
-
                 ktorApplication = this
-                applicationContext = c
 
+                val c = annotationContext(configure)
+                applicationContext = c
+                c.register(autoConfigClazz)
                 c.refresh()
             }
 
@@ -49,23 +55,18 @@ class SpringContext(configuration: Configuration) {
         }
 
         fun Application.annotationDriven(vararg packages: String, configure: (SpringContextConfiguration.() -> Unit)? = null) {
-
-            val c = AnnotationConfigApplicationContext()
-            val springConfig = SpringContextConfiguration()
-            configure?.let { springConfig.it() }
-            springConfig.applyOn(c)
-
             ktorApplication = this
 
+            val c = annotationContext(configure)
             applicationContext = c
 
             c.scan(*packages)
-
             c.refresh()
         }
     }
 
     companion object Feature : ApplicationFeature<ApplicationCallPipeline, Configuration, SpringContext> {
+        val logger = LoggerFactory.getLogger("SpringContext")
 
         override val key: AttributeKey<SpringContext> = AttributeKey("SpringContext")
 
@@ -77,14 +78,14 @@ class SpringContext(configuration: Configuration) {
             val application = feature.ktorApplication
 
             feature.context.start()
-            feature.contextStartAction()
+            feature.afterContextStart(feature)
             logger.info("Spring context started.")
 
             application.environment.monitor.let { e ->
                 e.subscribe(ApplicationStopped) {
                     logger.info("Closing Spring context.")
+                    feature.beforeContextClose(feature)
                     feature.context.close()
-                    feature.contextCloseAction()
                 }
             }
 
@@ -99,19 +100,23 @@ private fun timing(task: () -> Unit): Long {
     return System.currentTimeMillis() - start
 }
 
-class SpringContextConfiguration internal constructor() {
+class SpringContextConfiguration internal constructor(builder: (SpringContextConfiguration.() -> Unit)? = null) {
     private val additionalActions = LinkedList<GenericApplicationContext.() -> Unit>()
+
+    init {
+        builder?.invoke(this)
+    }
 
     /**
      * Additional Actions to Spring Context
      * It will execute before the context start to scan and load.
      */
-    fun additionalActions(action : GenericApplicationContext.() -> Unit) = additionalActions.add(action)
+    fun additionalActions(action: GenericApplicationContext.() -> Unit) = additionalActions.add(action)
 
     internal fun applyOn(context: GenericApplicationContext) {
         val actions = additionalActions.toList()
 
-        logger.info("Applying {} additional context configuration actions.", actions.size)
+        SpringContext.logger.info("Applying {} additional context configuration actions.", actions.size)
 
         actions.forEach { context.it() }
     }

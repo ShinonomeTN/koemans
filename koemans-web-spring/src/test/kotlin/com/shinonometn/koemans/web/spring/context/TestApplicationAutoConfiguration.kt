@@ -1,8 +1,8 @@
 package com.shinonometn.koemans.web.spring.context
 
-import com.shinonometn.koemans.web.spring.RoutingProvider
-import com.shinonometn.koemans.web.spring.injectRoute
-import com.shinonometn.koemans.web.spring.injectRouteGroup
+import com.shinonometn.koemans.web.spring.route.RoutingProvider
+import com.shinonometn.koemans.web.spring.route.injectRoute
+import com.shinonometn.koemans.web.spring.route.injectRouteGroup
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan

@@ -1,5 +1,6 @@
-package com.shinonometn.koemans.web.spring
+package com.shinonometn.koemans.web.spring.configuration
 
+import com.shinonometn.koemans.web.spring.springContext
 import io.ktor.application.*
 
 /**

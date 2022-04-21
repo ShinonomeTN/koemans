@@ -1,11 +1,10 @@
 package com.shinonometn.koemans.web.spring.context
 
-import com.shinonometn.koemans.web.spring.RouteProvider
+import com.shinonometn.koemans.web.spring.route.RouteProvider
 import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import org.springframework.stereotype.Component
-import kotlin.text.get
 
 @Component
 class TestRouteConfigClass(private val config: TestApplicationAutoConfiguration) : RouteProvider {

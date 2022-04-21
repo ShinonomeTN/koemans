@@ -40,6 +40,16 @@ class SpringContextTest {
     }
 
     @Test
+    fun `Test @KtorRoute install`() {
+        withTestApplication(Application::mainTestModule) {
+            handleRequest(HttpMethod.Get, "/ktor/route").apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("Installed from @KtorRoute.", response.content)
+            }
+        }
+    }
+
+    @Test
     fun `Test context property load`() {
         withTestApplication(Application::mainTestModule) {
             handleRequest(HttpMethod.Get, "/property/title").apply {
