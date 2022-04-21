@@ -10,7 +10,7 @@ import kotlin.reflect.jvm.isAccessible
 /**
  * Get current HoconConfig from the Application's environment by reflection.
  *
- * returns false if current environment is not an HoconApplicationConfig
+ * returns null if current environment is not a HoconApplicationConfig
  */
 fun Application.getEnvironmentHoconConfig() : Config? {
     val envConfig = environment.config
