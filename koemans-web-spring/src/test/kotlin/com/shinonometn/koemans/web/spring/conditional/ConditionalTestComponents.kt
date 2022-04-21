@@ -7,18 +7,18 @@ import org.springframework.stereotype.Component
 private val logger = LoggerFactory.getLogger(ConditionalTest::class.java)
 
 @Component
-@WithConditionOnBean(TestConditionalBeanNotExists::class)
+@WithConditionOnBean(classes = [TestConditionalBeanNotExists::class])
 class TestConditionalOnBeanNotLoaded
 
 @Component
-class TestConditionalOnBeanDependency {
+class DependencyOfTestConditionalOnBean {
     init {
-        logger.info("TestConditionalOnBeanDependency is loaded")
+        logger.info("DependencyOfTestConditionalOnBean is loaded")
     }
 }
 
 @Component
-@WithConditionOnBean(TestConditionalOnBeanDependency::class)
+@WithConditionOnBean(classes = [DependencyOfTestConditionalOnBean::class])
 class TestConditionalOnBean
 
 @Component

@@ -30,7 +30,7 @@ class ConditionalTest {
         return context
     }
 
-    private fun createEmptyContext(): AnnotationConfigApplicationContext {
+    private fun createEmptySpringContext(): AnnotationConfigApplicationContext {
         val context = AnnotationConfigApplicationContext()
         context.environment.propertySources.addFirst(
             HoconPropertySource.buildPropertySourceFrom(
@@ -57,7 +57,7 @@ class ConditionalTest {
 
     @Test
     fun `Test evaluation 1`() {
-        val context = createEmptyContext()
+        val context = createEmptySpringContext()
         val resolver = context.beanFactory.beanExpressionResolver ?: StandardBeanExpressionResolver()
         val context1 = BeanExpressionContext(context.beanFactory, null)
         val rawExpression = "#{\${test.value3:false}}"
