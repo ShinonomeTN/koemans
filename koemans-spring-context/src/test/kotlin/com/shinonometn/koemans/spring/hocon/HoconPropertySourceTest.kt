@@ -2,7 +2,6 @@ package com.shinonometn.koemans.spring.hocon
 
 import com.shinonometn.koemans.spring.HoconPropertySource
 import com.typesafe.config.ConfigFactory
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
