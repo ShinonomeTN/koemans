@@ -20,8 +20,8 @@ class ConditionalTest {
         val context = AnnotationConfigApplicationContext()
         context.environment.propertySources.addFirst(
             HoconPropertySource.buildPropertySourceFrom(
-                "test",
-                EncodedResource(ClassPathResource("test.hocon"), "UTF8")
+                "conditional",
+                EncodedResource(ClassPathResource("conditional.hocon"), "UTF8")
             )
         )
         context.register(ConditionalTestAutoConfiguration::class.java)
@@ -34,8 +34,8 @@ class ConditionalTest {
         val context = AnnotationConfigApplicationContext()
         context.environment.propertySources.addFirst(
             HoconPropertySource.buildPropertySourceFrom(
-                "test",
-                EncodedResource(ClassPathResource("test.hocon"), "UTF8")
+                "conditional",
+                EncodedResource(ClassPathResource("conditional.hocon"), "UTF8")
             )
         )
         context.refresh()
