@@ -12,6 +12,14 @@ abstract class SqlDatabaseConfiguration {
     abstract var name : String
         protected set
 
+    open val supportUsernamePassword : Boolean = false
+
+    open var username : String? = null
+        protected set
+
+    open var password : String? = null
+        protected set
+
     /** The datasource factory method. Return `null` inside if you don't use datasource */
     open var dataSource: SqlDatabaseConfiguration.() -> DataSource? = { null }
 

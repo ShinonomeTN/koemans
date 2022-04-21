@@ -12,6 +12,16 @@ class MariaDB(val name: String, override val db: Database, override val datasour
         override var driverClassName = Driver::class.qualifiedName!!
         override var urlFactory: () -> String = this::buildUrl
 
+        override val supportUsernamePassword = true
+
+        fun username(string : String) {
+            username = string
+        }
+
+        fun password(string : String) {
+            password = string
+        }
+
         private val urlParams = UrlQueryParameter()
         fun parameters(builder: UrlQueryParameter.() -> Unit) {
             urlParams.builder()
