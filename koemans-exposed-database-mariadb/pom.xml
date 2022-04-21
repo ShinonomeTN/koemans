@@ -9,12 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>koemans-exposed-database-sqlite3</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
-
     <properties>
-        <sqlite3.version>3.34.0</sqlite3.version>
+        <mariadb.version>3.0.4</mariadb.version>
     </properties>
+
+    <artifactId>koemans-exposed-database-mariadb</artifactId>
+    <version>1.1.1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -23,18 +23,10 @@
             <version>1.1</version>
         </dependency>
 
-        <!--compile group: 'org.xerial', name: 'sqlite-jdbc', version:'3.34.0'-->
         <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <version>${sqlite3.version}</version>
-        </dependency>
-
-        <!-- Those are test dependencies -->
-        <dependency>
-            <groupId>com.shinonometn</groupId>
-            <artifactId>koemans-exposed-datasource-hikari</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>${mariadb.version}</version>
         </dependency>
     </dependencies>
 

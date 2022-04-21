@@ -1,6 +1,6 @@
-package com.shinonometn.koemans.exposed.database.sqlite
+package com.shinonometn.koemans.exposed.database
 
-import com.shinonometn.koemans.exposed.database.sqlDatabase
+import com.shinonometn.koemans.exposed.datasource.HikariDatasource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -16,7 +16,11 @@ class Sqlite3Test {
     fun `Test open database`() {
         val sqlite3 = sqlDatabase(Sqlite3) {
             inMemory("test_database")
-            poolingStrategy = HikariPooling()
+            dataSource = HikariDatasource()
+
+            exposed {
+
+            }
         }
 
         sqlite3 {
@@ -26,8 +30,8 @@ class Sqlite3Test {
 
         sqlite3 {
             exec("select text from tb_test") {
-                assertTrue("It should have at least 1 record.",it.next())
-                assertTrue("Record content should be 'Hello World'.",it.getString(1) == "Hello world")
+                assertTrue("It should have at least 1 record.", it.next())
+                assertTrue("Record content should be 'Hello World'.", it.getString(1) == "Hello world")
             }
         }
     }
@@ -36,7 +40,7 @@ class Sqlite3Test {
     fun `Test open database 2`() {
         sqlDatabase(Sqlite3) {
             inMemory("test_database")
-            poolingStrategy = HikariPooling {
+            dataSource = HikariDatasource {
                 it.connectionTimeout = 1000
                 it.idleTimeout = 1000
                 it.maxLifetime = 1000
@@ -60,7 +64,7 @@ class Sqlite3Test {
 
         val writeOnly = sqlDatabase(Sqlite3) {
             inFile("test_database", file.toPath())
-            poolingStrategy = HikariPooling()
+            dataSource = HikariDatasource()
         }
 
         writeOnly {
@@ -82,8 +86,8 @@ class Sqlite3Test {
                 async(Dispatchers.IO) {
                     readOnly {
                         exec("select text from tb_test limit 1") {
-                            assertTrue("It should have at least 1 record.",it.next())
-                            assertTrue("Record content should be 'Hello World'.",it.getString(1) == "Hello world")
+                            assertTrue("It should have at least 1 record.", it.next())
+                            assertTrue("Record content should be 'Hello World'.", it.getString(1) == "Hello world")
                         }
                     }
                 }
@@ -93,8 +97,8 @@ class Sqlite3Test {
         runBlocking {
             readOnly {
                 exec("select count(id) from tb_test") {
-                    assertTrue("It should have at least 1 record.",it.next())
-                    assertTrue("Record content should be '100'.",it.getInt(1) == 100)
+                    assertTrue("It should have at least 1 record.", it.next())
+                    assertTrue("Record content should be '100'.", it.getInt(1) == 100)
                 }
             }
         }

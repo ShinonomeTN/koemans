@@ -46,7 +46,13 @@
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-exposed-database-sqlite3</artifactId>
-            <version>1.1</version>
+            <version>1.1.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.shinonometn</groupId>
+            <artifactId>koemans-exposed-datasource-hikari</artifactId>
+            <version>1.1.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>

@@ -30,15 +30,20 @@
 
     <modules>
         <module>koemans-utils</module>
+        <module>koemans-event-hub</module>
+        <module>koemans-coroutine</module>
+
         <module>koemans-web-ktor</module>
+        <module>koemans-web-spring</module>
 
         <module>koemans-exposed</module>
         <module>koemans-exposed-database</module>
 
-        <module>koemans-coroutine</module>
-        <module>koemans-web-spring</module>
-        <module>koemans-event-hub</module>
         <module>koemans-exposed-database-sqlite3</module>
+        <module>koemans-exposed-database-mariadb</module>
+
+        <module>koemans-exposed-datasource-hikari</module>
+
         <module>koemans-all</module>
     </modules>
 

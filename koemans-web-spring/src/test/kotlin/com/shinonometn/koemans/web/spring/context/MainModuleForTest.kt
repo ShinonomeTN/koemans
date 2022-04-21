@@ -1,8 +1,9 @@
 package com.shinonometn.koemans.web.spring.context
 
 import com.shinonometn.koemans.web.spring.SpringContext
-import com.shinonometn.koemans.web.spring.installSpringRoutingConfigurations
+import com.shinonometn.koemans.web.spring.route.installSpringRoutingConfigurations
 import com.shinonometn.koemans.web.spring.propertySourcePlaceholderSupport
+import com.shinonometn.koemans.web.spring.route.routingConfigurationBySpring
 import com.shinonometn.koemans.web.spring.useHoconPropertySource
 import io.ktor.application.*
 import io.ktor.routing.*
@@ -16,7 +17,9 @@ fun Application.mainTestModule() {
         }
     }
 
-    routing {
-        installSpringRoutingConfigurations()
-    }
+//    routing {
+//        installSpringRoutingConfigurations()
+//    }
+
+    routingConfigurationBySpring()
 }

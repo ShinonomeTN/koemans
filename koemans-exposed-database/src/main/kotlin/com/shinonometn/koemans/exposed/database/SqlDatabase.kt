@@ -4,17 +4,14 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.transactions.transactionManager
-import java.sql.Connection
-
-enum class TransactionLevel(val level: Int) {
-    NONE(Connection.TRANSACTION_NONE),
-    ALLOW_UNCOMMITTED(Connection.TRANSACTION_READ_COMMITTED),
-    REPEATABLE_READ(Connection.TRANSACTION_REPEATABLE_READ),
-    STRICT(Connection.TRANSACTION_SERIALIZABLE)
-}
+import javax.sql.DataSource
 
 interface SqlDatabase {
+    /** The exact Exposed Database */
     val db : Database
+
+    /** The datasource this Exposed Database currently used. `null` if no datasource. */
+    val datasource : DataSource?
 
     operator fun <T> invoke(transactionLevel: TransactionLevel? = null, statement: Transaction.() -> T) : T = transaction(
         transactionLevel?.level ?: db.transactionManager.defaultIsolationLevel,
@@ -25,11 +22,21 @@ interface SqlDatabase {
     }
 }
 
-interface SqlDatabaseType<TDatabase : SqlDatabase, TConfiguration> {
-    fun createDatabase(block : TConfiguration.() -> Unit) : TDatabase
-}
-
-fun <TDatabase : SqlDatabase, TConfiguration> sqlDatabase(
+/**
+ * Create a SQL Database connection with specified [databaseType].
+ *
+ * After that, you can use it for database operations
+ * ```kotlin
+ * val database = sqlDatabase(Sqlite3) {
+ *      // do your configuration here
+ * }
+ *
+ * database {
+ *      // do your database operations here
+ * }
+ * ```
+ */
+fun <TDatabase : SqlDatabase, TConfiguration : SqlDatabaseConfiguration> sqlDatabase(
     databaseType : SqlDatabaseType<TDatabase, TConfiguration>,
     config : TConfiguration.() -> Unit
 ) : TDatabase = databaseType.createDatabase(config)
