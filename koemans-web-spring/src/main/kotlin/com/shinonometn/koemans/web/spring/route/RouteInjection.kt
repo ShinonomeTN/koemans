@@ -98,7 +98,7 @@ private fun prepareRoutingConfiguration(springContext : ApplicationContext) : Ro
         }.map { kFunction ->
             // Get @KtorRoute on Controller method
             val annotation = kFunction.annotations.filterIsInstance<KtorRoute>().first()
-            KtorRouteInfo(rootPath?.takeIf { it.isNotBlank() },annotation.route.takeIf { it.isNotBlank() }, controller, kFunction)
+            KtorRouteInfo(rootPath,annotation.route, controller, kFunction)
         }
     }
 

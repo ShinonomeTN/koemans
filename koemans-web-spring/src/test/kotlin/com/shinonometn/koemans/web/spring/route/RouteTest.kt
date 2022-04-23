@@ -28,4 +28,14 @@ class RouteTest {
             }
         }
     }
+
+    @Test
+    fun `Test empty route path install`() {
+        withTestApplication(Application::routeModuleForTest) {
+            handleRequest(HttpMethod.Get, "/ktor").apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("HelloWorld2!", response.content)
+            }
+        }
+    }
 }

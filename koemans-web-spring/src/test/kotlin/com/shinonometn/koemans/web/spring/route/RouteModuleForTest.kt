@@ -31,6 +31,11 @@ open class RouteTestApplicationConfiguration {
 @KtorRoute("/ktor")
 class TestController {
 
+    @KtorRoute
+    fun Route.hello2() = get {
+        call.respond("HelloWorld2!")
+    }
+
     @KtorRoute("/route")
     fun Route.hello() = get {
         call.respondText { "HelloWorld!" }
