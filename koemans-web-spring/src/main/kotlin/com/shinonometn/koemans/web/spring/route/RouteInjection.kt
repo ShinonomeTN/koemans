@@ -68,9 +68,10 @@ fun Route.injectRouteGroup(name: String) {
  * Automatically install routing configuration (usually a root routing configuration) by
  * [RoutingProvider]s and [RouteProvider]s in Spring context.
  *
- * If has any bean name conflict, Spring will not load the later one (according to dependencies)
+ * If there has any bean name conflict, Spring will not load the later one (according to dependencies)
  * with the same name.
  */
+@Deprecated("use 'routingConfigurationBySpring' instead.")
 fun Routing.installSpringRoutingConfigurations() {
     val context = application.springContext
     val logger = SpringContext.logger
@@ -119,4 +120,11 @@ private fun prepareRoutingConfiguration(springContext : ApplicationContext) : Ro
     }
 }
 
+/**
+ * Automatically install routing configuration (usually a root routing configuration) by
+ * [RoutingProvider]s and [RouteProvider]s and controllers with [KtorRoute]s in Spring context.
+ *
+ * If there has any bean name conflict, Spring will not load the later one (according to dependencies)
+ * with the same name.
+ */
 fun Application.routingConfigurationBySpring() = routing(prepareRoutingConfiguration(springContext))
