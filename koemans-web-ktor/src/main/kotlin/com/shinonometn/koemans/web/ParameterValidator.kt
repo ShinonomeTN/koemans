@@ -182,3 +182,12 @@ class Validator internal constructor(private val policy: Policy, private val con
         return Validator(newPolicy, newConfig)
     }
 }
+
+@ValidatorBuilderDsl
+fun Validator.Configuration.vararg(hint: String = "invalid_value", logic: (String) -> Boolean) = validator(hint) { param ->
+    when (param) {
+        is String -> logic(param)
+        is List<*> -> param.all { logic(it as String) }
+        else -> false
+    }
+}
