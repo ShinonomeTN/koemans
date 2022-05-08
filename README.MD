@@ -1,5 +1,7 @@
-# Koemans
+# Koemans 
 
+[![Test And Deployment](https://github.com/ShinonomeTN/koemans/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/ShinonomeTN/koemans/actions/workflows/maven.yml)
+-
 Koemans is an util set for us for building Ktor based web applications.
 
 ## Features
