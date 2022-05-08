@@ -28,6 +28,4 @@ jobs:
         cache: maven
     - name: Build with Maven
       shell: bash
-      run: |
-        NEXUS_USERNAME=$NEXUS_USERNAME NEXUS_PASSWORD=$NEXUS_PASSWORD |
-        mvn -s ./.mvn/settings.xml -B deploy --file pom.xml
+      run: mvn -s ./.mvn/settings.xml -B deploy --file pom.xml
