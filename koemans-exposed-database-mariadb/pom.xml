@@ -14,13 +14,12 @@
     </properties>
 
     <artifactId>koemans-exposed-database-mariadb</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-exposed-database</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

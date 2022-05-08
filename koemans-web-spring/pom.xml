@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>koemans-web-spring</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -22,13 +21,13 @@
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-utils</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-spring-context</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

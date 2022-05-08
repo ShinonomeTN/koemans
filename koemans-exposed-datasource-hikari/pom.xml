@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>koemans-exposed-datasource-hikari</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
 
     <properties>
         <hikari.version>3.4.3</hikari.version>
@@ -20,7 +19,7 @@
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-exposed-database</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

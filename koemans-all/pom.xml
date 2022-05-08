@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>koemans-all</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -22,67 +21,67 @@
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-coroutine</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-exposed</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-event-hub</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-exposed-database</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-exposed-database-sqlite3</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-exposed-datasource-hikari</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-utils</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-web-ktor</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-web-spring</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-web-ktor-session</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.shinonometn</groupId>
             <artifactId>koemans-web-ktor-auth-session</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
