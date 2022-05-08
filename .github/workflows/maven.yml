@@ -26,4 +26,5 @@ jobs:
       env:
         NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
         NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-      run: echo $NEXUS_USERNAME && echo $NEXUS_PASSWORD
+      run: |
+        echo '$env:NEXUS_USERNAME' && echo '$env:NEXUS_PASSWORD'
