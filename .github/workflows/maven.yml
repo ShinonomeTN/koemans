@@ -24,6 +24,6 @@ jobs:
         cache: maven
     - name: Build with Maven
       env:
-        NEXUS_USERNAME=${{ secrets.NEXUS_USERNAME }}
-        NEXUS_PASSWORD=${{ secrets.NEXUS_PASSWORD }}
+        NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+        NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       run: mvn -s ./.mvn/settings.xml -B deploy -Dmaven.test.skip=true --file pom.xml
