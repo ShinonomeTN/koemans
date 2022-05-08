@@ -29,4 +29,5 @@ jobs:
     - name: Build with Maven
       shell: bash
       run: |
-        echo "$NEXUS_USERNAME" && echo $NEXUS_PASSWORD && echo "$PATH"
+        NEXUS_USERNAME=$NEXUS_USERNAME NEXUS_PASSWORD=$NEXUS_PASSWORD |
+        mvn -s ./.mvn/settings.xml -B deploy --file pom.xml
