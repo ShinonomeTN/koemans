@@ -23,4 +23,4 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: NEXUS_USERNAME=${{env.NEXUS_USERNAME}} NEXUS_PASSWORD=${{env.NEXUS_PASSWORD}} mvn -s ./.mvn/settings.xml -B deploy -Dmaven.test.skip=true --file pom.xml
+      run: NEXUS_USERNAME=${{ secrets.NEXUS_USERNAME }} NEXUS_PASSWORD=${{ secrets.NEXUS_PASSWORD }} mvn -s ./.mvn/settings.xml -B deploy -Dmaven.test.skip=true --file pom.xml
