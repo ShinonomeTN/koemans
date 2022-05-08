@@ -41,10 +41,10 @@ class Sqlite3Test {
         sqlDatabase(Sqlite3) {
             inMemory("test_database")
             dataSource = HikariDatasource {
-                it.connectionTimeout = 1000
-                it.idleTimeout = 1000
-                it.maxLifetime = 1000
-                it.maximumPoolSize = 1
+                connectionTimeout = 1000
+                idleTimeout = 1000
+                maxLifetime = 1000
+                maximumPoolSize = 1
             }
         }
     }
@@ -58,7 +58,7 @@ class Sqlite3Test {
         val readOnly = sqlDatabase(Sqlite3) {
             inFile("test_database", file.toPath())
             dataSource = HikariDatasource {
-                it.maximumPoolSize = 20
+                maximumPoolSize = 20
             }
         }
 
