@@ -23,8 +23,9 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
+      shell: bash
       env:
         NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
         NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       run: |
-        echo "$env:NEXUS_USERNAME" && echo $env:NEXUS_PASSWORD
+        echo "$NEXUS_USERNAME" && echo $NEXUS_PASSWORD
