@@ -1,8 +1,11 @@
 # Koemans 
 
 [![Test And Deployment](https://github.com/ShinonomeTN/koemans/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/ShinonomeTN/koemans/actions/workflows/maven.yml)
+[![Star](https://img.shields.io/github/stars/ShinonomeTN/koemans)](https://github.com/ShinonomeTN/koemans/stargazers)
+[![Twitter](https://img.shields.io/badge/Twitter-%40CattenLinger-blue?style=flat&logo=twitter)](https://twitter.com/CattenLinger)
+[![Version](https://img.shields.io/github/v/release/ShinonomeTN/koemans?include_prereleases)](https://github.com/ShinonomeTN/koemans/releases)
 -
-Koemans is an util set for us for building Ktor based web applications.
+Koemans is an util set for us to building Ktor based web applications.
 
 ## Features
 
@@ -57,7 +60,7 @@ You can just import the hole Koemans:
 implementation("org.shinonometn:koemans-all:1.1")
 ```
 
-or jus some modules.
+or just some modules.
 
 ```groovy
 // Exposed supports only
