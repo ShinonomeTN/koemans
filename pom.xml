@@ -36,6 +36,8 @@
 
         <module>koemans-web-ktor</module>
         <module>koemans-web-spring</module>
+        <module>koemans-web-ktor-session</module>
+        <module>koemans-web-ktor-auth-session</module>
 
         <module>koemans-exposed</module>
         <module>koemans-exposed-database</module>
