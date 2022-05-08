@@ -9,6 +9,10 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+  NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
 jobs:
   build:
 
@@ -24,8 +28,5 @@ jobs:
         cache: maven
     - name: Build with Maven
       shell: bash
-      env:
-        NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-        NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       run: |
         echo "$NEXUS_USERNAME" && echo $NEXUS_PASSWORD
