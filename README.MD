@@ -4,6 +4,8 @@
 [![Star](https://img.shields.io/github/stars/ShinonomeTN/koemans)](https://github.com/ShinonomeTN/koemans/stargazers)
 [![Twitter](https://img.shields.io/badge/Twitter-%40CattenLinger-blue?style=flat&logo=twitter)](https://twitter.com/CattenLinger)
 [![Version](https://img.shields.io/github/v/release/ShinonomeTN/koemans?include_prereleases)](https://github.com/ShinonomeTN/koemans/releases)
+[![License](https://img.shields.io/github/license/ShinonomeTN/koemans)](https://github.com/ShinonomeTN/koemans/blob/master/LICENSE)
+
 -
 Koemans is an util set for us to building Ktor based web applications.
 
