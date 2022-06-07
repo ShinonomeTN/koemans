@@ -1,12 +1,16 @@
 package com.shinonometn.koemans.coroutine
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.asExecutor
 import java.util.concurrent.Executor
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+/**
+ * Do work in IO threads.
+ */
 suspend fun <T> background(executor: Executor = Dispatchers.IO.asExecutor(), block: () -> T): T = suspendCoroutine {
     executor.execute {
         try {
@@ -16,3 +20,10 @@ suspend fun <T> background(executor: Executor = Dispatchers.IO.asExecutor(), blo
         }
     }
 }
+
+/**
+ * If job is finish running
+ * @return is finished
+ */
+val Job.isDead : Boolean
+    get() = isCancelled || isCompleted
