@@ -8,7 +8,8 @@
 [![Version](https://img.shields.io/github/v/release/ShinonomeTN/koemans?include_prereleases)](https://github.com/ShinonomeTN/koemans/releases)
 [![License](https://img.shields.io/github/license/ShinonomeTN/koemans)](https://github.com/ShinonomeTN/koemans/blob/master/LICENSE)
 
--
+---
+
 Koemans is an util set for us to building Ktor based web applications.
 
 ## Features
