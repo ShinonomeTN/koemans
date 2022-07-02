@@ -14,5 +14,17 @@
             <username>${env.NEXUS_USERNAME}</username>
             <password>${env.NEXUS_PASSWORD}</password>
         </server>
+
+        <server>
+            <id>github-release</id>
+            <username>${env.GH_USERNAME}</username>
+            <password>${env.GH_PASSWORD}</password>
+        </server>
+
+        <server>
+            <id>github-snapshot</id>
+            <username>${env.GH_USERNAME}</username>
+            <password>${env.GH_PASSWORD}</password>
+        </server>
     </servers>
 </settings>

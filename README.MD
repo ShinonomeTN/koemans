@@ -1,6 +1,8 @@
 # Koemans 
 
-[![Test And Deployment](https://github.com/ShinonomeTN/koemans/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/ShinonomeTN/koemans/actions/workflows/maven.yml)
+[![Test](https://github.com/ShinonomeTN/koemans/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/ShinonomeTN/koemans/actions/workflows/test.yml)
+[![Deployment@GitHub](https://github.com/ShinonomeTN/koemans/actions/workflows/deploy-github.yml/badge.svg?branch=master)](https://github.com/ShinonomeTN/koemans/actions/workflows/deploy-github.yml)
+[![Deployment@ShinonomeTN](https://github.com/ShinonomeTN/koemans/actions/workflows/deploy-shinonometn.yml/badge.svg?branch=master)](https://github.com/ShinonomeTN/koemans/actions/workflows/deploy-shinonometn.yml)
 [![Star](https://img.shields.io/github/stars/ShinonomeTN/koemans)](https://github.com/ShinonomeTN/koemans/stargazers)
 [![Twitter](https://img.shields.io/badge/Twitter-%40CattenLinger-blue?style=flat&logo=twitter)](https://twitter.com/CattenLinger)
 [![Version](https://img.shields.io/github/v/release/ShinonomeTN/koemans?include_prereleases)](https://github.com/ShinonomeTN/koemans/releases)
@@ -28,7 +30,7 @@ Koemans is an util set for us to building Ktor based web applications.
 
 ## Where to get it
 
-Currently, Koemans is not available on public maven repositories. But you can use it through our private repository.
+Now Koemans is available on GitHub Pakcages.
 
 Gradle:
 ```groovy
@@ -36,7 +38,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        url = "https://nexus.shinonometn.com/repository/maven-public/"
+        url = "https://maven.pkg.github.com/shinonometn/koemans/"
     }
 }
 ```
@@ -44,10 +46,16 @@ repositories {
 Maven:
 ```xml
 <repository>
-  <id>shinonometn-public</id>
-  <name>ShinonomeTN Public Maven Repository</name>
-  <url>https://nexus.shinonometn.com/repository/maven-public/</url>
+  <id>shinonometn-github-koemans</id>
+  <name>Koemans Github Repository</name>
+  <url>https://maven.pkg.github.com/shinonometn/koemans/</url>
 </repository>
+```
+
+You can use our private repository as well:
+
+```
+https://nexus.shinonometn.com/repository/maven-public/
 ```
 
 or just pull and install it via `mvn`.
