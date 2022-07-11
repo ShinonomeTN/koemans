@@ -183,6 +183,9 @@ class Validator internal constructor(private val policy: Policy, private val con
     }
 }
 
+/**
+ * Vararg validator
+ */
 @ValidatorBuilderDsl
 fun Validator.Configuration.vararg(hint: String = "invalid_value", logic: (String) -> Boolean) = validator(hint) { param ->
     when (param) {
