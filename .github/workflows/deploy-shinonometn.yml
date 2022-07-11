@@ -5,7 +5,7 @@ name: Deployment@ShinonomeTN
 
 on:
   release:
-    type: [published]
+    type: [release, prerelease]
 
 env:
   NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
@@ -26,4 +26,4 @@ jobs:
         cache: maven
     - name: Build with Maven
       shell: bash
-      run: mvn -s ./.mvn/settings.xml -B clean deploy -Pshinonometn --file pom.xml
+      run: ./mvnw -s ./.mvn/settings.xml -B clean deploy -Pshinonometn --file pom.xml

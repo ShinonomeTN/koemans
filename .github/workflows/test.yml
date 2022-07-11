@@ -24,4 +24,4 @@ jobs:
           cache: maven
       - name: Build with Maven
         shell: bash
-        run: mvn -s ./.mvn/settings.xml -B test --file pom.xml
+        run: ./mvnw -s ./.mvn/settings.xml -B test --file pom.xml

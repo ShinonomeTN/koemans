@@ -5,11 +5,11 @@ name: Deployment@GitHub
 
 on:
   release:
-    type: [published]
+    type: [release, prerelease]
 
 env:
-  NEXUS_USERNAME: ${{ secrets.GH_USERNAME }}
-  NEXUS_PASSWORD: ${{ secrets.GH_PASSWORD }}
+  GH_USERNAME: ${{ secrets.GH_USERNAME }}
+  GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
 
 jobs:
   build:
@@ -26,4 +26,4 @@ jobs:
           cache: maven
       - name: Build with Maven
         shell: bash
-        run: mvn -s ./.mvn/settings.xml -B clean deploy -Pgithub --file pom.xml
+        run: ./mvnw -s ./.mvn/settings.xml -B clean deploy -Pgithub --file pom.xml
