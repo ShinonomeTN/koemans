@@ -1,11 +1,14 @@
-package com.shinonometn.koemans
+package com.shinonometn.koemans.web
 
 import com.typesafe.config.Config
 import io.ktor.application.*
 import io.ktor.config.*
+import io.ktor.util.pipeline.*
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.jvm.isAccessible
+
+typealias KtorCallContext = PipelineContext<Unit, ApplicationCall>
 
 /**
  * Get current HoconConfig from the Application's environment by reflection.
