@@ -2,6 +2,12 @@ package com.shinonometn.koemans.exposed
 
 import org.jetbrains.exposed.sql.*
 
+/**
+ * Create Exposed sql expression
+ */
+@Suppress("FunctionName")
+fun ESQL(builder : SqlExpressionBuilder.() -> Op<Boolean>) = SqlExpressionBuilder.builder()
+
 fun <R, T : Table> T.countBy(column: Column<R>, predicate : (SqlExpressionBuilder.(T) -> Op<Boolean>)? = null) : Long {
     val colCount = column.count()
     return slice(colCount).let { fs ->
