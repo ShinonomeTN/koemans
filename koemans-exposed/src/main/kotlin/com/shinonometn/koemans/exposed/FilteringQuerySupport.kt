@@ -1,6 +1,7 @@
 package com.shinonometn.koemans.exposed
 
 import org.jetbrains.exposed.sql.*
+import kotlin.reflect.KClass
 
 typealias PredicateFragmentBuilder = SqlExpressionBuilder.(FilterOptionMapping.ValueWrapper) -> Op<Boolean>
 
@@ -39,6 +40,9 @@ class FilterOptionMapping internal constructor(val config: Configuration) {
     operator fun invoke(params: FilterParams) = buildFilterRequest(params)
 
     private fun buildFilterRequest(params: FilterParams): FilterRequest {
+        val validator = config.validator
+        if(validator != null) validator(params)
+
         val keys = config.mapping.keys.filter {
             val param = params[it]
             param != null && param.isNotEmpty()
@@ -54,7 +58,7 @@ class FilterOptionMapping internal constructor(val config: Configuration) {
         return FilterRequest(op, keys)
     }
 
-    class ValueWrapper(val name: String, private val parameters: FilterParams) {
+    class ValueWrapper(val name: String, val parameters: FilterParams) {
         fun asString() = parameters[name]!!.first()
         fun asList(): List<String> = parameters[name]!!
         fun <T> convertTo(converter : (List<String>) -> T) = converter(parameters[name]!!)
@@ -62,6 +66,8 @@ class FilterOptionMapping internal constructor(val config: Configuration) {
 
     class Configuration {
         internal val mapping = LinkedHashMap<String, PredicateFragmentBuilder>()
+
+        var validator : ((FilterParams) -> Unit)? = null
 
         var opBuilder: SqlExpressionBuilder.(Map<String, Op<Boolean>>) -> Op<Boolean> = {
             AndOp(it.values.toList())
@@ -84,4 +90,36 @@ class FilterOptionMapping internal constructor(val config: Configuration) {
         newConfig.builder()
         return FilterOptionMapping(newConfig)
     }
+}
+
+fun FilterOptionMapping.ValueWrapper.asLong() = convertTo { it.first().toLong() }
+
+fun FilterOptionMapping.ValueWrapper.asLongList() = convertTo { it.map { s -> s.toLong() } }
+
+fun FilterOptionMapping.ValueWrapper.asInt() = convertTo { it.first().toInt() }
+
+fun FilterOptionMapping.ValueWrapper.asIntList() = convertTo { it.map { s -> s.toInt() } }
+
+fun FilterOptionMapping.ValueWrapper.asBoolean() = convertTo { it.first() != "false" }
+
+fun FilterOptionMapping.ValueWrapper.asBooleanList() = convertTo { it.map { s -> s != "false" } }
+
+fun FilterOptionMapping.ValueWrapper.asDouble() = convertTo { it.first().toDouble() }
+
+fun FilterOptionMapping.ValueWrapper.asDoubleList() = convertTo { it.map { s -> s.toDouble() } }
+
+fun FilterOptionMapping.ValueWrapper.asFloat() = convertTo { it.first().toFloat() }
+
+fun FilterOptionMapping.ValueWrapper.asFloatList() = convertTo { it.map { s -> s.toFloat() } }
+
+fun FilterOptionMapping.ValueWrapper.asBigDecimal() = convertTo { it.first().toBigDecimal() }
+
+fun FilterOptionMapping.ValueWrapper.asBigDecimalList() = convertTo { it.map { s -> s.toBigDecimal() } }
+
+fun <T : Enum<T>> FilterOptionMapping.ValueWrapper.asEnum(klazz : KClass<T>): T = convertTo {
+    klazz.java.enumConstants.first { e -> it.first() == e.name }
+}
+
+fun <T : Enum<T>> FilterOptionMapping.ValueWrapper.asEnumList(klazz: KClass<T>) : List<T> = convertTo {
+    it.map { s -> klazz.java.enumConstants.first { e -> e.name == s } }
 }
