@@ -1,8 +1,7 @@
 # Koemans 
 
 [![Test](https://github.com/ShinonomeTN/koemans/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/ShinonomeTN/koemans/actions/workflows/test.yml)
-[![Deployment@GitHub](https://github.com/ShinonomeTN/koemans/actions/workflows/deploy-github.yml/badge.svg?branch=master)](https://github.com/ShinonomeTN/koemans/actions/workflows/deploy-github.yml)
-[![Deployment@ShinonomeTN](https://github.com/ShinonomeTN/koemans/actions/workflows/deploy-shinonometn.yml/badge.svg?branch=master)](https://github.com/ShinonomeTN/koemans/actions/workflows/deploy-shinonometn.yml)
+[![Deployment](https://github.com/ShinonomeTN/koemans/actions/workflows/deploy-shinonometn.yml/badge.svg?branch=master)](https://github.com/ShinonomeTN/koemans/actions/workflows/deploy-shinonometn.yml)
 [![Star](https://img.shields.io/github/stars/ShinonomeTN/koemans)](https://github.com/ShinonomeTN/koemans/stargazers)
 [![Twitter](https://img.shields.io/badge/Twitter-%40CattenLinger-blue?style=flat&logo=twitter)](https://twitter.com/CattenLinger)
 [![Version](https://img.shields.io/github/v/release/ShinonomeTN/koemans?include_prereleases)](https://github.com/ShinonomeTN/koemans/releases)
@@ -33,51 +32,25 @@ Koemans is an util set for us to building Ktor based web applications.
 
 ## Where to get it
 
-Now Koemans is available on GitHub Pakcages.
+For repository url, please see [ShinonomeTN Public Maven Repository](https://github.com/ShinonomeTN/maven-public)
 
-Gradle:
-```groovy
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        url = "https://maven.pkg.github.com/shinonometn/koemans/"
-    }
-}
-```
-
-Maven:
-```xml
-<repository>
-  <id>shinonometn-github-koemans</id>
-  <name>Koemans Github Repository</name>
-  <url>https://maven.pkg.github.com/shinonometn/koemans/</url>
-</repository>
-```
-
-You can use our private repository as well:
-
-```
-https://nexus.shinonometn.com/repository/maven-public/
-```
-
-or just pull and install it via `mvn`.
+or just pull and install it via `./mvnw install`.
 
 ## Usages & Examples
 
 You can just import the hole Koemans:
 
 ```groovy
-implementation("org.shinonometn:koemans-all:1.1")
+implementation("org.shinonometn:koemans-all:${koemans.version}")
 ```
 
 or just some modules.
 
 ```groovy
 // Exposed supports only
-implementation("org.shinonometn:koemans-exposed:1.1")
-implementation("org.shinonometn:koemans-exposed-database:1.1")
-implementation("org.shinonometn:koemans-exposed-database-sqlite3:1.1")
+implementation("org.shinonometn:koemans-exposed:${koemans.version}")
+implementation("org.shinonometn:koemans-exposed-database:${koemans.version}")
+implementation("org.shinonometn:koemans-exposed-database-sqlite3:${koemans.version}")
 ```
 
 ### Create a simple application with spring context
