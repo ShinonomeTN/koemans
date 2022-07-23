@@ -5,7 +5,7 @@ name: Deployment@GitHub
 
 on:
   release:
-    type: [release, prerelease]
+    types: [release, prerelease]
 
 env:
   GH_USERNAME: ${{ secrets.GH_USERNAME }}
