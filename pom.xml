@@ -125,12 +125,12 @@
             <distributionManagement>
                 <repository>
                     <id>github-release</id>
-                    <url>https://maven.pkg.github.com/shinonometn/koemans/</url>
+                    <url>https://maven.pkg.github.com/shinonometn/maven-public/</url>
                     <uniqueVersion>true</uniqueVersion>
                 </repository>
                 <snapshotRepository>
                     <id>github-snapshot</id>
-                    <url>https://maven.pkg.github.com/shinonometn/koemans/</url>
+                    <url>https://maven.pkg.github.com/shinonometn/maven-public/</url>
                 </snapshotRepository>
             </distributionManagement>
         </profile>
