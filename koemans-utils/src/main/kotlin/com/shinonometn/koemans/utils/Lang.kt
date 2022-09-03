@@ -21,3 +21,10 @@ fun <T> resultOf(provider: () -> T) : Result<T> {
         Result.failure(e)
     }
 }
+
+/**
+ * Take if type match
+ */
+inline fun <reified T> Any.takeIfIs() : T? {
+    return if(this is T) this else null
+}
