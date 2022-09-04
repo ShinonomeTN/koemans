@@ -3,7 +3,7 @@ package com.shinonometn.koemans.utils
 /**
  * Take a value, return null if catch any exception.
  */
-fun <T> nullIfFailed(provider : () -> T) : T? {
+fun <T> successOrNull(provider : () -> T) : T? {
     return try {
         provider()
     } catch (e : Exception) {
