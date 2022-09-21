@@ -2,6 +2,7 @@ package com.shinonometn.koemans.utils
 
 import org.apache.commons.codec.binary.Hex
 import org.junit.Test
+import kotlin.random.Random
 import kotlin.test.assertEquals
 
 class ByteUtilsTest {
@@ -37,6 +38,24 @@ class ByteUtilsTest {
     }
 
     @Test
+    fun `Test Bytes to Long with offset`() {
+        repeat(1000) {
+            val expected = Random.nextLong(Long.MAX_VALUE)
+            val bs = expected.toByteArray()
+            listOf(
+                byteArrayOf(0, 0, *bs, 0, 0) to (2..9),
+                byteArrayOf(*bs, 0, 0) to (0..7),
+                byteArrayOf(0, 0, 0, *bs) to (3..10)
+            ).forEach { (arr, range) ->
+                val actual = arr.toLong(range)
+                assertEquals(expected, actual, "Should equals")
+            }
+        }
+    }
+
+    /* Integer */
+
+    @Test
     fun `Test Int to bytes`() {
         val int = 0x11223344
         val bytes = int.toByteArray()
@@ -65,5 +84,31 @@ class ByteUtilsTest {
     fun `Test Bytes to Int empty`() {
         val int = byteArrayOf().toInt()
         assertEquals(0, int)
+    }
+
+    @Test
+    fun `Test Bytes to Int with offset`() {
+        repeat(1000) {
+            val expected = Random.nextInt(Int.MAX_VALUE)
+            val byteArray = byteArrayOf(0, 0, *(expected.toByteArray()))
+            val actual = byteArray.toInt(2)
+            assertEquals(expected, actual, "Should equals")
+        }
+    }
+
+    @Test
+    fun `Test Bytes to Int with range`() {
+        repeat(1000) {
+            val expected = Random.nextInt(Int.MAX_VALUE)
+            val bs = expected.toByteArray()
+            listOf(
+                byteArrayOf(0, 0, *bs, 0, 0) to (2..5),
+                byteArrayOf(*bs, 0, 0) to (0..3),
+                byteArrayOf(0, 0, 0, *bs) to (3..6)
+            ).forEach { (arr, range) ->
+                val actual = arr.toInt(range)
+                assertEquals(expected, actual, "Should equals")
+            }
+        }
     }
 }
