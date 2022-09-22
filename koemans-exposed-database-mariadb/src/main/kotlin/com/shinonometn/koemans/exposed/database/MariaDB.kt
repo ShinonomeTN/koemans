@@ -14,7 +14,11 @@ class MariaDB(val name: String, override val db: Database, override val datasour
         override var name: String by observable("") { _, _, new -> if (database == null) database = new }
 
         override var driverClassName = Driver::class.qualifiedName!!
+
         override var urlFactory: () -> String = this::buildUrl
+
+        /** Use a url instead of detailed configuration */
+        fun url(url : String) { urlFactory = { url } }
 
         override val supportUsernamePassword = true
 
