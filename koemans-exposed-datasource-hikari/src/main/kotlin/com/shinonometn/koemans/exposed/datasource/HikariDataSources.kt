@@ -2,6 +2,7 @@
 
 package com.shinonometn.koemans.exposed.datasource
 
+import com.shinonometn.koemans.exposed.database.DataSourceProvider
 import com.shinonometn.koemans.exposed.database.SqlDatabaseConfiguration
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -14,7 +15,7 @@ import javax.sql.DataSource
  * `driverClassName`, `jdbcUrl`, `username` and `password` are automatically set.
  */
 @Suppress("unused")
-fun SqlDatabaseConfiguration.HikariDatasource(hikariConfigurator: HikariConfig.() -> Unit): SqlDatabaseConfiguration.() -> DataSource = {
+fun SqlDatabaseConfiguration.HikariDatasource(hikariConfigurator: HikariConfig.() -> Unit): DataSourceProvider = {
     val driverClassName = driverClassName
     val username = username
     val password = password
@@ -44,23 +45,8 @@ fun SqlDatabaseConfiguration.HikariDatasource(hikariConfigurator: HikariConfig.(
  *  `driverClassName`, `jdbcUrl`, `username` and `password` are automatically set.
  */
 @Suppress("unused")
-fun SqlDatabaseConfiguration.HikariDatasource(): SqlDatabaseConfiguration.() -> DataSource = {
-    val driverClassName = driverClassName
-    val username = username ?: ""
-    val password = password ?: ""
-
-    val hikariConfig = HikariConfig().apply {
-        poolName = "Hikari-${databaseTypeName}-${name}"
-
-        this.driverClassName = driverClassName
-
-        this.username = username
-        this.password = password
-
-        jdbcUrl = urlFactory()
-        minimumIdle = 1
-        maximumPoolSize = 1
-    }
-
-    HikariDataSource(hikariConfig)
+fun SqlDatabaseConfiguration.HikariDatasource(): DataSourceProvider = HikariDatasource {
+    jdbcUrl = urlFactory()
+    minimumIdle = 1
+    maximumPoolSize = 1
 }
