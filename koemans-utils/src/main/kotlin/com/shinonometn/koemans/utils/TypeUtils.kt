@@ -30,7 +30,7 @@ enum class SimpleType(internal val kType: KType) {
 fun Any?.typeLiteral(): SimpleType {
     if(this == null) return SimpleType.Null
     val kType = this::class.createType()
-    return SimpleType.orderedNormalTypes.firstOrNull { kType == it.kType } ?: SimpleType.Object
+    return SimpleType.orderedNormalTypes.firstOrNull { it.kType.isSupertypeOf(kType) } ?: SimpleType.Object
 }
 
 fun KType.toLiteralType(): SimpleType {
