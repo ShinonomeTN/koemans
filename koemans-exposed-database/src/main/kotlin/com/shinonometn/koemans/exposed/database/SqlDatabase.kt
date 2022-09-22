@@ -6,6 +6,8 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.transactions.transactionManager
 import javax.sql.DataSource
 
+typealias DataSourceProvider = SqlDatabaseConfiguration.() -> DataSource?
+
 interface SqlDatabase {
     /** The exact Exposed Database */
     val db : Database
