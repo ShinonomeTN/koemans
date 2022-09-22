@@ -25,52 +25,75 @@ fun <T> resultOf(provider: () -> T): Result<T> {
 /**
  * Take if type match
  */
-inline fun <reified T> Any.takeIfIs(): T? {
-    return if (this is T) this else null
-}
+inline fun <reified T> Any.takeIfIs(): T? = if (this is T) this else null
 
 /** Give some altering if matching condition */
 fun <T> T.transformIf(condition: (T) -> Boolean = { true }, transform: (T) -> T) = if (condition(this)) transform(this) else this
 
-/** Pair plus one element is a triple */
-operator fun <A, B, C> Pair<A, B>.plus(any: C) = Triple(first, second, any)
 
-operator fun <A, B, C> C.plus(pair: Pair<A, B>) = Triple(this, pair.first, pair.second)
+/** Give some altering if matching condition */
+fun <T> T.transformIf(condition: Boolean, transform: (T) -> T) = if (condition) transform(this) else this
+
+/** Pair plus one element is a triple */
+infix fun <A, B, C> Pair<A, B>.to(any: C) = Triple(first, second, any)
+
+operator fun <A, B, C> Pair<A, B>.plus(any: C) = to(any)
+
+infix fun <A, B, C> C.to(pair: Pair<A, B>) = Triple(this, pair.first, pair.second)
+
+operator fun <A, B, C> C.plus(pair: Pair<A, B>) = to(pair)
 
 /** Four elements in a group is a quadruple */
 data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val forth: D)
 
-operator fun <A, B, C, D> Triple<A, B, C>.plus(any: D) = Quadruple(first, second, third, any)
+operator fun <A, B, C, D> Triple<A, B, C>.plus(any: D) = to(any)
 
-operator fun <A, B, C, D> D.plus(triple: Triple<A, B, C>) = Quadruple(this, triple.first, triple.second, triple.third)
+infix fun <A, B, C, D> Triple<A, B, C>.to(any: D) = Quadruple(first, second, third, any)
 
-fun <A, B, C, D> Pair<Pair<A, B>, Pair<C, D>>.toQuadruple() = Quadruple(first.first, first.second, second.first, second.second)
+infix fun <A, B, C, D> D.to(triple: Triple<A, B, C>) = Quadruple(this, triple.first, triple.second, triple.third)
 
-operator fun <A, B, C, D> Pair<A, B>.plus(another: Pair<C, D>) = Quadruple(first, second, another.first, another.second)
+operator fun <A, B, C, D> D.plus(triple: Triple<A, B, C>) = to(triple)
+
+fun <A, B, C, D> Pair<A, B>.to(pair: Pair<C, D>) = Quadruple(first, second, pair.first, pair.second)
+
+operator fun <A, B, C, D> Pair<A, B>.plus(another: Pair<C, D>) = to(another)
 
 /** Five elements in a group is a quintuple */
 data class Quintuple<A, B, C, D, E>(val first: A, val second: B, val third: C, val forth: D, val fifth: E)
 
-operator fun <A, B, C, D, E> Quadruple<A, B, C, D>.plus(any: E) = Quintuple(first, second, third, forth, any)
+infix fun <A, B, C, D, E> Quadruple<A, B, C, D>.to(any: E) = Quintuple(first, second, third, forth, any)
 
-operator fun <A, B, C, D, E> E.plus(quadruple: Quadruple<A, B, C, D>) =
+operator fun <A, B, C, D, E> Quadruple<A, B, C, D>.plus(any: E) = to(any)
+
+operator fun <A, B, C, D, E> E.plus(quadruple: Quadruple<A, B, C, D>) = to(quadruple)
+
+infix fun <A, B, C, D, E> E.to(quadruple: Quadruple<A, B, C, D>) =
     Quintuple(this, quadruple.first, quadruple.second, quadruple.third, quadruple.forth)
 
 /** Six elements in a group is a sextuple */
 data class Sextuple<A, B, C, D, E, F>(val first: A, val second: B, val third: C, val forth: D, val fifth: E, val sixth: F)
 
-operator fun <A, B, C, D, E, F> Quintuple<A, B, C, D, E>.plus(any: F) = Sextuple(first, second, third, forth, fifth, any)
+infix fun <A, B, C, D, E, F> Quintuple<A, B, C, D, E>.to(any: F) = Sextuple(first, second, third, forth, fifth, any)
 
-operator fun <A, B, C, D, E, F> F.plus(any: Quintuple<A, B, C, D, E>) = Sextuple(this, any.first, any.second, any.third, any.forth, any.fifth)
+operator fun <A, B, C, D, E, F> Quintuple<A, B, C, D, E>.plus(any: F) = to(any)
+
+operator fun <A, B, C, D, E, F> F.plus(quintuple: Quintuple<A, B, C, D, E>) = to(quintuple)
+
+infix fun <A, B, C, D, E, F> F.to(quintuple: Quintuple<A, B, C, D, E>) =
+    Sextuple(this, quintuple.first, quintuple.second, quintuple.third, quintuple.forth, quintuple.fifth)
 
 /** Seven elements in a group is a septuple */
 
 data class Septuple<A, B, C, D, E, F, G>(val first: A, val second: B, val third: C, val forth: D, val fifth: E, val sixth: F, val seventh: G)
 
-operator fun <A, B, C, D, E, F, G> Sextuple<A, B, C, D, E, F>.plus(any: G) = Septuple(first, second, third, forth, fifth, sixth, any)
+infix fun <A, B, C, D, E, F, G> Sextuple<A, B, C, D, E, F>.to(any: G) = Septuple(first, second, third, forth, fifth, sixth, any)
 
-operator fun <A, B, C, D, E, F, G> G.plus(sextuple: Sextuple<A, B, C, D, E, F>) =
+operator fun <A, B, C, D, E, F, G> Sextuple<A, B, C, D, E, F>.plus(any: G) = to(any)
+
+infix fun <A, B, C, D, E, F, G> G.to(sextuple: Sextuple<A, B, C, D, E, F>) =
     Septuple(this, sextuple.first, sextuple.second, sextuple.forth, sextuple.fifth, sextuple.sixth, sextuple)
+
+operator fun <A, B, C, D, E, F, G> G.plus(sextuple: Sextuple<A, B, C, D, E, F>) = to(sextuple)
 
 /** Eight elements in a group is a octuple */
 data class Octuple<A, B, C, D, E, F, G, H>(
@@ -84,9 +107,13 @@ data class Octuple<A, B, C, D, E, F, G, H>(
     val eighth: H
 )
 
-operator fun <A, B, C, D, E, F, G, H> Septuple<A, B, C, D, E, F, G>.plus(any: H) = Octuple(first, second, third, forth, fifth, sixth, seventh, any)
+infix fun <A, B, C, D, E, F, G, H> Septuple<A, B, C, D, E, F, G>.to(any: H) = Octuple(first, second, third, forth, fifth, sixth, seventh, any)
 
-operator fun <A, B, C, D, E, F, G, H> H.plus(any: Septuple<A, B, C, D, E, F, G>) =
-    Octuple(this, any.first, any.second, any.third, any.forth, any.fifth, any.sixth, any.seventh)
+operator fun <A, B, C, D, E, F, G, H> Septuple<A, B, C, D, E, F, G>.plus(any: H) = to(any)
+
+infix fun <A, B, C, D, E, F, G, H> H.to(septuple: Septuple<A, B, C, D, E, F, G>) =
+    Octuple(this, septuple.first, septuple.second, septuple.third, septuple.forth, septuple.fifth, septuple.sixth, septuple.seventh)
+
+operator fun <A, B, C, D, E, F, G, H> H.plus(septuple: Septuple<A, B, C, D, E, F, G>) = to(septuple)
 
 /** We don't have nine elements in a group :) */
