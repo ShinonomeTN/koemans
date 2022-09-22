@@ -4,17 +4,21 @@ import com.shinonometn.koemans.utils.UrlQueryParameter
 import org.jetbrains.exposed.sql.Database
 import org.mariadb.jdbc.Driver
 import javax.sql.DataSource
+import kotlin.properties.Delegates.observable
 
 class MariaDB(val name: String, override val db: Database, override val datasource: DataSource?) : SqlDatabase {
 
     class Configuration : SqlDatabaseConfiguration() {
-        override var name: String = ""
+
+        /** The name of this connection. Default is the database name. */
+        override var name: String by observable("") { _, _, new -> if (database == null) database = new }
+
         override var driverClassName = Driver::class.qualifiedName!!
         override var urlFactory: () -> String = this::buildUrl
 
         override val supportUsernamePassword = true
 
-        public override var username : String? = ""
+        public override var username: String? = ""
         public override var password: String? = ""
 
         private val urlParams = UrlQueryParameter()
@@ -24,15 +28,14 @@ class MariaDB(val name: String, override val db: Database, override val datasour
 
         private var hostInfo: String = "127.0.0.1:3306"
 
-        var database: String? = null
-            set(value) {
-                field = value
-                this.name = value ?: ""
-            }
+        /** Database name. Default is the connection name */
+        var database: String? by observable(null) { _, _, new -> if (name.isBlank() && !new.isNullOrBlank()) name = new }
 
-        fun localhost() {
-            hostInfo = "jdbc:mariadb://127.0.0.1:3306/"
-        }
+        /** use localhost */
+        fun localhost() = host("127.0.0.1")
+
+        /** use localhost with [port] */
+        fun localhost(port: Int) = host("127.0.0.1", port)
 
 
         /** Configure database host info with [address] and [port] */
