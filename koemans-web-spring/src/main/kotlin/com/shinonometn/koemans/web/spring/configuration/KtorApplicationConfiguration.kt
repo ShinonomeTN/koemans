@@ -4,7 +4,6 @@ import com.shinonometn.koemans.web.spring.SpringContext
 import com.shinonometn.koemans.web.spring.route.routingConfigurationBySpring
 import com.shinonometn.koemans.web.spring.springContext
 import io.ktor.application.*
-import io.ktor.routing.*
 import org.springframework.beans.factory.getBeansWithAnnotation
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Configuration
@@ -38,7 +37,7 @@ fun Application.installSpringFeatureConfiguration() {
     log.info("Installed {} feature configurations.", featureConfigs.count())
 }
 
-class KtorConfigurationInfo(val priority : Double, val configuration : Any, val function : KCallable<*>)
+class KtorConfigurationInfo(val priority: Double, val configuration: Any, val function: KCallable<*>)
 
 private fun Application.prepareKtorConfigurations(springContext: ApplicationContext) {
     val configurations = springContext.getBeansWithAnnotation<Configuration>().values
@@ -62,8 +61,10 @@ private fun Application.prepareKtorConfigurations(springContext: ApplicationCont
  * It will execute all methods in @Configuration beans with annotation @KtorConfiguration
  * And install routes from all RoutingProvider, RouteProvider and methods with @KtorRoute in @Controller
  * beans
+ *
+ * @param configure SpringContext additional configuration
  */
-fun Application.configureBySpring(configure : SpringContext.Configuration.() -> Unit) {
+fun Application.configureBySpring(configure: SpringContext.Configuration.() -> Unit) {
     install(SpringContext, configure)
 
     prepareKtorConfigurations(springContext)
