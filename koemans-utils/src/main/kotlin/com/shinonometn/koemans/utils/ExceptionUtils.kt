@@ -32,3 +32,9 @@ fun StackTraceElement.simpleStringRepresent() = "${className}.${methodName}@${fi
 fun Exception.firstCauseString() : String? {
     return stackTrace.firstOrNull()?.simpleStringRepresent()
 }
+
+/** Throw an IllegalArgumentException with optional [message] */
+fun illegalArgument(message : String? = null) : Nothing = throw IllegalArgumentException(message)
+
+/** Throw an IllegalArgumentException with message provider  */
+fun illegalArgument(message : () -> String?): Nothing = illegalArgument(message())
