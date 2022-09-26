@@ -5,9 +5,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.junit.Assert.*
 import org.junit.Test
 import java.nio.file.Files
+import kotlin.random.Random
 
 @Suppress("SqlResolve")
 class Sqlite3Test {
@@ -102,5 +104,29 @@ class Sqlite3Test {
                 }
             }
         }
+    }
+
+    @Test(expected = ExposedSQLException::class)
+    fun `Test read and write in memory`() {
+        val database = sqlDatabase(Sqlite3) {
+            inMemory("in_memory_rw_test")
+            dataSource = HikariDatasource {
+                maximumPoolSize = 20
+            }
+        }
+
+        database { exec("create table tb_test(id integer primary key, text text)") }
+
+        val actions = listOf(
+            { "insert into tb_test(text) values ('${System.currentTimeMillis()}')" },
+            { "delete from tb_test where id < ${Random.nextInt()}" }
+        )
+
+        runBlocking { (1..1000).map { async(Dispatchers.IO) { database { exec(actions[0]()) } } }.awaitAll() }
+
+        val count = database { exec("select count(id) from tb_test") { it.next(); it.getInt(1) } }
+        assertEquals("Should have 1000 database rows", 1000, count)
+
+        runBlocking { (1..10000).map { async(Dispatchers.IO) { database { exec(actions[Random.nextInt(2)]()) } } } }
     }
 }
