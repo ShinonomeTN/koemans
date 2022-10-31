@@ -2,6 +2,7 @@ package com.shinonometn.koemans.web.spring
 
 import com.shinonometn.koemans.spring.SpringContextConfiguration
 import com.shinonometn.koemans.spring.annotationDrivenApplicationContext
+import com.shinonometn.koemans.spring.registerSingletonBean
 import io.ktor.application.*
 import io.ktor.util.*
 import org.slf4j.LoggerFactory
@@ -9,6 +10,7 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.support.GenericApplicationContext
 import java.util.*
 import java.util.function.Supplier
+import kotlin.properties.Delegates
 
 class SpringContext(configuration: Configuration) {
     val context: GenericApplicationContext = configuration.applicationContext
@@ -20,7 +22,7 @@ class SpringContext(configuration: Configuration) {
     internal val beforeContextClose = configuration.beforeContextClose
 
     class Configuration {
-        internal var ktorApplication: Application? = null
+        internal var ktorApplication: Application by Delegates.notNull()
 
         internal var applicationContext: GenericApplicationContext? = null
             private set
@@ -42,7 +44,7 @@ class SpringContext(configuration: Configuration) {
                 ktorApplication = this
 
                 applicationContext = annotationDrivenApplicationContext(autoConfigClazz) {
-                    registerBean(Supplier { ktorApplication })
+                    registerSingletonBean { ktorApplication }
                     configure?.invoke(this)
                 }
             }
@@ -55,7 +57,7 @@ class SpringContext(configuration: Configuration) {
 
             val time = timing {
                 applicationContext = annotationDrivenApplicationContext(*packages) {
-                    registerBean(Supplier { ktorApplication })
+                    registerSingletonBean { ktorApplication }
                     configure?.invoke(this)
                 }
             }
