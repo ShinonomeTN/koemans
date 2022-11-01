@@ -115,8 +115,9 @@ class SpringContext(configuration: Configuration) {
 
             application.environment.monitor.let { e ->
                 val context = feature.context
-                e.subscribe(ApplicationStarted) {
-                    if (bindLifecycle) feature.startContext()
+                if (bindLifecycle) feature.startContext()
+
+                e.subscribe(ApplicationStarting) {
                     context.publishEvent(KtorApplicationStartedEvent(application))
                     feature.afterContextStart(feature)
                 }
