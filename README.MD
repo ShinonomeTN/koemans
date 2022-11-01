@@ -11,9 +11,10 @@
 
 Koemans is an util set for us to building Ktor based web applications.
 
-> Now ktor's latest version is 2.x, but Koemans was written for 1.x. We are planning to upgrading the ktor 2.x version.
+> Now ktor's latest version is 2.x, but Koemans was written for 1.x. We are planning to upgrading to the ktor 2.x
+> version.
 > This will need some time because it will break our existing projects due to the incompatible between ktor 1.x and 2.x.
-> So, ktor upgrade will available since Koemans 2.x, Koemans 1.x will be legacy version.
+> So, ktor upgrade will available since Koemans 2.x, Koemans 1.x will be legacy versions.
 
 ## Features
 
