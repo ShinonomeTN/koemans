@@ -73,7 +73,7 @@ fun String.isDecimal(maxFloatDigests: Int = 18, allowLeftPaddingZeros: Boolean =
  * Check if string is a literal boolean
  */
 fun String.isBoolean(): Boolean {
-    val l = toLowerCase()
+    val l = lowercase()
     return l == "true" || l == "false"
 }
 
