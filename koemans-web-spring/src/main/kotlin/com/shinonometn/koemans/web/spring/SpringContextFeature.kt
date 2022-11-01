@@ -79,7 +79,7 @@ class SpringContext(configuration: Configuration) {
             }
         }
 
-        fun Application.annotationDrivenContext(autoConfigClazz: Class<*>, configure: (SpringContextConfiguration.() -> Unit)? = null) {
+        fun Application.annotationDriven(autoConfigClazz: Class<*>, configure: (SpringContextConfiguration.() -> Unit)? = null) {
             applicationContext { annotationDrivenApplicationContext(autoConfigClazz) { configure?.invoke(this) } }
         }
 
