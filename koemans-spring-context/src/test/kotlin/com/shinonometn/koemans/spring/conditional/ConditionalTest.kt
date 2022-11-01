@@ -1,9 +1,6 @@
 package com.shinonometn.koemans.spring.conditional
 
-import com.shinonometn.koemans.spring.annotationDrivenApplicationContext
-import com.shinonometn.koemans.spring.find
-import com.shinonometn.koemans.spring.propertySourcePlaceholderSupport
-import com.shinonometn.koemans.spring.useHoconPropertySource
+import com.shinonometn.koemans.spring.*
 import org.junit.Test
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.beans.factory.config.BeanExpressionContext
@@ -22,7 +19,7 @@ class ConditionalTest {
             propertySourcePlaceholderSupport()
             useHoconPropertySource("conditional", ClassPathResource("conditional.conf"))
         }
-        context.start()
+        context.bootstrap()
         return context
     }
 
@@ -31,8 +28,7 @@ class ConditionalTest {
             propertySourcePlaceholderSupport()
             useHoconPropertySource("conditional", ClassPathResource("conditional.conf"))
         }
-        context.refresh()
-        context.start()
+        context.bootstrap()
         return context
     }
 
