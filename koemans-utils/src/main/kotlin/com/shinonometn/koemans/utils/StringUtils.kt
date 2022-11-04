@@ -4,6 +4,7 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
+import kotlin.time.Duration
 
 /**
  * Copy from io.ktor.server.engine.CommandLine
@@ -93,6 +94,10 @@ fun String.isDecimal(maxFloatDigests: Int = 18, allowLeftPaddingZeros: Boolean =
         else -> true
     }
 }
+
+
+/** Parse a duration from string. Returns a kotlin duration */
+fun String.toDuration() = Duration.parse(this)
 
 /**
  * Check if string is a literal boolean
