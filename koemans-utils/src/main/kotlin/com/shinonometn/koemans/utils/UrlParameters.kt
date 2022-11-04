@@ -63,10 +63,27 @@ fun mutableUrlParametersFrom(string: String): Map<String, List<String>> = if (st
     }
 }
 
-/** String list utils */
+/* String collection utils */
 
+/** convert a string list to url-encoded string list.
+ * A string that containing all url-encoded elements separated by ','
+ */
 fun Collection<String>.urlEncoded() = joinToString(",") { it.urlEncoded() }
 
+/** parse a url encoded */
 fun urlEncodedListFrom(string: String): List<String> = if (string.isBlank()) emptyList() else string.split(",").map { decodeUrlEncoded(it) }
 
-fun urlEncodedSetFrom(string: String): Set<String> = if (string.isBlank()) emptySet() else string.split(",").map { it.urlEncoded() }.toSet()
+/** parse a url encoded list and put all values to set */
+fun urlEncodedSetFrom(string: String): Set<String> = if (string.isBlank()) emptySet() else urlEncodedListFrom(string).toSet()
+
+/* String map utils */
+
+/** Convert a string-to-string map to url-encoded form */
+fun Map<String, String>.urlEncoded() = if (isEmpty()) "" else entries.joinToString("&") { (key, value) ->
+    """${key.urlEncoded()}=${value.urlEncoded()}"""
+}
+
+/** build a string-to-string map from url-encoded string */
+fun urlEncodedMapFrom(string: String) = if (string.isBlank()) emptyMap() else string.split("&")
+    .mapNotNull { str -> str.takeIf { it.isNotBlank() }?.splitToPairLax('=') }
+    .toMap()
