@@ -19,7 +19,12 @@ fun urlParametersOf() = emptyUrlParametersOf()
 fun Collection<Pair<String, String>>.toUrlParameters(): Map<String, List<String>> =
     groupBy { it.first }.mapValues { entry -> entry.value.map { it.second } }
 
-/** Convert to url-encoded parameter string */
+/**
+ * Convert to url-encoded parameter string
+ *
+ * @param dense use dense list format (like: `key1=value1,value2&key2=value1`), default is true
+ *              if not sure, set it false to use flatten list format for better compatibility (like: `key1=value1&key1=value2`)
+ */
 @JvmName("urlEncodedStringStringMap")
 fun UrlParameters.urlEncoded(dense: Boolean = true) = when {
     isEmpty() -> ""
