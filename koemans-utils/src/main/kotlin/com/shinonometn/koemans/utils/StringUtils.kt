@@ -1,16 +1,41 @@
 package com.shinonometn.koemans.utils
 
+import java.net.URLDecoder
+import java.net.URLEncoder
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
+
 /**
  * Copy from io.ktor.server.engine.CommandLine
  *
  * Split string with first [separator] meet
  * If no separator, return null
  */
-fun String.splitToPair(separator: Char): Pair<String, String>? = indexOf(separator).let { idx ->
+fun String.splitToPair(separator: Char): Pair<String, String>? = if (isBlank()) null else indexOf(separator).let { idx ->
     when (idx) {
         -1 -> null
         else -> Pair(take(idx), drop(idx + 1))
     }
+}
+
+/** Same as splitToPair, but give a blank value when no [separator] meet */
+fun String.splitToPairLax(separator: Char): Pair<String, String>? = if (isBlank()) null else indexOf(separator).let { idx ->
+    when (idx) {
+        -1 -> Pair(this, "")
+        else -> Pair(take(idx), drop(idx + 1))
+    }
+}
+
+/** Transform any string to url-encoded */
+fun String.urlEncoded(encoding: Charset = StandardCharsets.UTF_8): String {
+    if (isEmpty()) return ""
+    return URLEncoder.encode(this, encoding.name())
+}
+
+/** Transform any url-encoded string to normal string */
+fun decodeUrlEncoded(string: String, encoding: Charset = StandardCharsets.UTF_8): String {
+    if (string.isEmpty()) return ""
+    return URLDecoder.decode(string, encoding.name())
 }
 
 /**
