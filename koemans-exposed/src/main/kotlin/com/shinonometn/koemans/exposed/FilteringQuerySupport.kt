@@ -1,5 +1,6 @@
 package com.shinonometn.koemans.exposed
 
+import com.shinonometn.koemans.utils.UrlParameters
 import org.jetbrains.exposed.sql.*
 import kotlin.reflect.KClass
 
@@ -29,17 +30,15 @@ fun FieldSet.selectBy(filterRequest: FilterRequest, additionalBuilder: (SqlExpre
     }
 }
 
-typealias FilterParams = Map<String, List<String>?>
-
 class FilterOptionMapping internal constructor(val config: Configuration) {
 
     constructor(builder: Configuration.() -> Unit) : this(Configuration()) {
         config.builder()
     }
 
-    operator fun invoke(params: FilterParams) = buildFilterRequest(params)
+    operator fun invoke(params: UrlParameters) = buildFilterRequest(params)
 
-    private fun buildFilterRequest(params: FilterParams): FilterRequest {
+    private fun buildFilterRequest(params: UrlParameters): FilterRequest {
         val validator = config.validator
         if(validator != null) validator(params)
 
@@ -58,7 +57,7 @@ class FilterOptionMapping internal constructor(val config: Configuration) {
         return FilterRequest(op, keys)
     }
 
-    class ValueWrapper(val name: String, val parameters: FilterParams) {
+    class ValueWrapper(val name: String, val parameters: UrlParameters) {
         fun asString() = parameters[name]!!.first()
         fun asList(): List<String> = parameters[name]!!
         fun <T> convertTo(converter : (List<String>) -> T) = converter(parameters[name]!!)
@@ -67,7 +66,7 @@ class FilterOptionMapping internal constructor(val config: Configuration) {
     class Configuration {
         internal val mapping = LinkedHashMap<String, PredicateFragmentBuilder>()
 
-        var validator : ((FilterParams) -> Unit)? = null
+        var validator : ((UrlParameters) -> Unit)? = null
 
         var opBuilder: SqlExpressionBuilder.(Map<String, Op<Boolean>>) -> Op<Boolean> = {
             AndOp(it.values.toList())
