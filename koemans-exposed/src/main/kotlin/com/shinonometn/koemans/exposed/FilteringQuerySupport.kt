@@ -11,9 +11,24 @@ class FilterRequest internal constructor(internal var op: Op<Boolean>, val param
         op = op.and(predicate)
         return op
     }
+
+    companion object
 }
 
-fun FieldSet.selectBy(filterRequest: FilterRequest, additionalBuilder: (SqlExpressionBuilder.(Op<Boolean>) -> Op<Boolean>)? = null): Query {
+/** build filter request directly from url parameters */
+fun FilterRequest.Companion.from(parameters: UrlParameters, mapping: FilterOptionMapping): FilterRequest {
+    return mapping(parameters)
+}
+
+/**
+ * Select by a filter request
+ *
+ * @param filterRequest filter request built from FilterOptionMapping
+ * @param additionalBuilder chain the filter request's predicates with custom predicates
+ *
+ * @return Exposed query
+ */
+fun FieldSet.selectBy(filterRequest: FilterRequest, additionalBuilder: (SqlExpressionBuilder.(filtering : Op<Boolean>) -> Op<Boolean>)? = null): Query {
 
     // When no params in filter, use the additional builder.
     // If no provided builder, just return selectAll()
@@ -30,7 +45,7 @@ fun FieldSet.selectBy(filterRequest: FilterRequest, additionalBuilder: (SqlExpre
     }
 }
 
-class FilterOptionMapping internal constructor(val config: Configuration) {
+class FilterOptionMapping internal constructor(private val config: Configuration) {
 
     constructor(builder: Configuration.() -> Unit) : this(Configuration()) {
         config.builder()
@@ -42,10 +57,7 @@ class FilterOptionMapping internal constructor(val config: Configuration) {
         val validator = config.validator
         if(validator != null) validator(params)
 
-        val keys = config.mapping.keys.filter {
-            val param = params[it]
-            param != null && param.isNotEmpty()
-        }.toList()
+        val keys = config.mapping.keys.filter { !params[it].isNullOrEmpty() }.toList()
 
         val fragments = keys.associateWith {
             config.mapping[it]!!.invoke(SqlExpressionBuilder, ValueWrapper(it, params))
@@ -66,9 +78,11 @@ class FilterOptionMapping internal constructor(val config: Configuration) {
     class Configuration {
         internal val mapping = LinkedHashMap<String, PredicateFragmentBuilder>()
 
+        /** Set the validator for incoming parameters */
         var validator : ((UrlParameters) -> Unit)? = null
 
-        var opBuilder: SqlExpressionBuilder.(Map<String, Op<Boolean>>) -> Op<Boolean> = {
+        /** overwrite the default op builder */
+        var opBuilder: SqlExpressionBuilder.(predicateMap : Map<String, Op<Boolean>>) -> Op<Boolean> = {
             AndOp(it.values.toList())
         }
 
