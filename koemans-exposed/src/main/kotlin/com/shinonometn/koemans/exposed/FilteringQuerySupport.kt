@@ -2,7 +2,6 @@ package com.shinonometn.koemans.exposed
 
 import com.shinonometn.koemans.utils.UrlParameters
 import org.jetbrains.exposed.sql.*
-import kotlin.reflect.KClass
 
 typealias PredicateFragmentBuilder = SqlExpressionBuilder.(FilterOptionMapping.ValueWrapper) -> Op<Boolean>
 
@@ -45,6 +44,11 @@ fun FieldSet.selectBy(filterRequest: FilterRequest, additionalBuilder: (SqlExpre
     }
 }
 
+/**
+ *
+ * Filter option mapping
+ *
+ */
 class FilterOptionMapping internal constructor(private val config: Configuration) {
 
     constructor(builder: Configuration.() -> Unit) : this(Configuration()) {
@@ -103,36 +107,4 @@ class FilterOptionMapping internal constructor(private val config: Configuration
         newConfig.builder()
         return FilterOptionMapping(newConfig)
     }
-}
-
-fun FilterOptionMapping.ValueWrapper.asLong() = convertTo { it.first().toLong() }
-
-fun FilterOptionMapping.ValueWrapper.asLongList() = convertTo { it.map { s -> s.toLong() } }
-
-fun FilterOptionMapping.ValueWrapper.asInt() = convertTo { it.first().toInt() }
-
-fun FilterOptionMapping.ValueWrapper.asIntList() = convertTo { it.map { s -> s.toInt() } }
-
-fun FilterOptionMapping.ValueWrapper.asBoolean() = convertTo { it.first() != "false" }
-
-fun FilterOptionMapping.ValueWrapper.asBooleanList() = convertTo { it.map { s -> s != "false" } }
-
-fun FilterOptionMapping.ValueWrapper.asDouble() = convertTo { it.first().toDouble() }
-
-fun FilterOptionMapping.ValueWrapper.asDoubleList() = convertTo { it.map { s -> s.toDouble() } }
-
-fun FilterOptionMapping.ValueWrapper.asFloat() = convertTo { it.first().toFloat() }
-
-fun FilterOptionMapping.ValueWrapper.asFloatList() = convertTo { it.map { s -> s.toFloat() } }
-
-fun FilterOptionMapping.ValueWrapper.asBigDecimal() = convertTo { it.first().toBigDecimal() }
-
-fun FilterOptionMapping.ValueWrapper.asBigDecimalList() = convertTo { it.map { s -> s.toBigDecimal() } }
-
-fun <T : Enum<T>> FilterOptionMapping.ValueWrapper.asEnum(klazz : KClass<T>): T = convertTo {
-    klazz.java.enumConstants.first { e -> it.first() == e.name }
-}
-
-fun <T : Enum<T>> FilterOptionMapping.ValueWrapper.asEnumList(klazz: KClass<T>) : List<T> = convertTo {
-    it.map { s -> klazz.java.enumConstants.first { e -> e.name == s } }
 }
