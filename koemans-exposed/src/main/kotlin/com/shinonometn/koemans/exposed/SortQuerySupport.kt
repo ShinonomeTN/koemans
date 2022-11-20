@@ -36,10 +36,8 @@ fun SortRequest.Companion.from(parameters: UrlParameters, mapping: SortOptionMap
  * Order by a sort request
  */
 fun Query.orderBy(sortRequest: SortRequest): Query {
-    val options = sortRequest.mapping.map { it.value.column to it.value.sortOrder }.takeIf {
-        it.isNotEmpty()
-    } ?: return this
-
+    if (sortRequest.isEmpty()) return this
+    val options = sortRequest.mapping.map { it.value.column to it.value.sortOrder }
     return orderBy(*options.toTypedArray())
 }
 

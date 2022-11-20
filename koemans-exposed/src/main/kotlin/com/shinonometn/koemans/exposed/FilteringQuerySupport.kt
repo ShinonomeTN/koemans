@@ -6,10 +6,24 @@ import org.jetbrains.exposed.sql.*
 typealias PredicateFragmentBuilder = SqlExpressionBuilder.(FilterOptionMapping.ValueWrapper) -> Op<Boolean>
 
 class FilterRequest internal constructor(internal var op: Op<Boolean>, val parameters: List<String>) {
+    @Deprecated("Deprecated", ReplaceWith("appendAnd()"))
     fun append(predicate: SqlExpressionBuilder.() -> Op<Boolean>): Op<Boolean> {
+        return appendAnd(predicate)
+    }
+
+    /** Append predicate using AND op*/
+    fun appendAnd(predicate: SqlExpressionBuilder.() -> Op<Boolean>): Op<Boolean> {
         op = op.and(predicate)
         return op
     }
+
+    /** Append predicate using OR op*/
+    fun appendOr(predicate: SqlExpressionBuilder.() -> Op<Boolean>): Op<Boolean> {
+        op = op.or(predicate)
+        return op
+    }
+
+    fun isEmpty() = (op == Op.TRUE)
 
     companion object
 }
@@ -31,7 +45,7 @@ fun FieldSet.selectBy(filterRequest: FilterRequest, additionalBuilder: (SqlExpre
 
     // When no params in filter, use the additional builder.
     // If no provided builder, just return selectAll()
-    if (filterRequest.parameters.isEmpty()) return when (additionalBuilder) {
+    if (filterRequest.isEmpty()) return when (additionalBuilder) {
         null -> selectAll()
         else -> select { additionalBuilder(this, Op.TRUE) }
     }
