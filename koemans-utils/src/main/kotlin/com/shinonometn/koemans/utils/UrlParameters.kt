@@ -6,14 +6,19 @@ package com.shinonometn.koemans.utils
  */
 typealias UrlParameters = Map<String, List<String>>
 
-/** Create url parameters from [pair]s */
+/** Create url parameters from [pair]s of key-list */
 fun urlParametersOf(vararg pair: Pair<String, List<String>>) = pair.toMap()
+
+/** Create url parameters from [pair]s */
+@JvmName("urlParametersOfStringPairs")
+fun urlParametersOf(vararg pair: Pair<String, String>) = pair.associate { it.first to listOf(it.second) }
 
 private val EMPTY_IMMUTABLE: UrlParameters = emptyMap()
 
 /** create a empty url parameter map */
 fun emptyUrlParametersOf(): UrlParameters = EMPTY_IMMUTABLE
 
+/** create a empty url parameter map */
 fun urlParametersOf() = emptyUrlParametersOf()
 
 fun Collection<Pair<String, String>>.toUrlParameters(): Map<String, List<String>> =
@@ -70,10 +75,14 @@ fun mutableUrlParametersFrom(string: String): Map<String, List<String>> = if (st
 
 /* String collection utils */
 
+
+@Deprecated("Deprecated", ReplaceWith("toUrlEncodedList()"))
+fun Collection<String>.urlEncoded() = toUrlEncodedList()
+
 /** convert a string list to url-encoded string list.
  * A string that containing all url-encoded elements separated by ','
  */
-fun Collection<String>.urlEncoded() = joinToString(",") { it.urlEncoded() }
+fun Collection<String>.toUrlEncodedList() = joinToString(",") { it.urlEncoded() }
 
 /** parse a url encoded */
 fun urlEncodedListFrom(string: String): List<String> = if (string.isBlank()) emptyList() else string.split(",").map { decodeUrlEncoded(it) }
@@ -83,8 +92,11 @@ fun urlEncodedSetFrom(string: String): Set<String> = if (string.isBlank()) empty
 
 /* String map utils */
 
+@Deprecated("Deprecated", ReplaceWith("toUrlEncodedMap()"))
+fun Map<String, String>.urlEncoded() = toUrlEncodedMap()
+
 /** Convert a string-to-string map to url-encoded form */
-fun Map<String, String>.urlEncoded() = if (isEmpty()) "" else entries.joinToString("&") { (key, value) ->
+fun Map<String, String>.toUrlEncodedMap() = if (isEmpty()) "" else entries.joinToString("&") { (key, value) ->
     """${key.urlEncoded()}=${value.urlEncoded()}"""
 }
 
