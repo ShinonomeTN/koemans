@@ -74,9 +74,17 @@ class FilterOptionMapping internal constructor(private val config: Configuration
     }
 
     class ValueWrapper(val name: String, val parameters: UrlParameters) {
+        /** take first value */
         fun asString() = parameters[name]!!.first()
-        fun asList(): List<String> = parameters[name]!!
-        fun <T> convertTo(converter : (List<String>) -> T) = converter(parameters[name]!!)
+
+        /** get all values */
+        @Deprecated("Deprecated", ReplaceWith("asStringList()"), DeprecationLevel.WARNING)
+        fun asList(): List<String> = asStringList()
+
+        /** get all values */
+        fun asStringList() = parameters[name]!!
+
+        fun <T> convertTo(converter: (List<String>) -> T) = converter(parameters[name]!!)
     }
 
     class Configuration {
@@ -85,7 +93,7 @@ class FilterOptionMapping internal constructor(private val config: Configuration
         /** Set the validator for incoming parameters */
         var validator : ((UrlParameters) -> Unit)? = null
 
-        /** overwrite the default op builder */
+        /** overwrite the default sql op builder */
         var opBuilder: SqlExpressionBuilder.(predicateMap : Map<String, Op<Boolean>>) -> Op<Boolean> = {
             AndOp(it.values.toList())
         }
@@ -98,13 +106,16 @@ class FilterOptionMapping internal constructor(private val config: Configuration
         fun exclude(vararg name: String) {
             name.forEach { mapping.remove(it) }
         }
+
+        internal fun copyFrom(another: Configuration): Configuration {
+            mapping.putAll(another.mapping)
+            opBuilder = another.opBuilder
+            validator = another.validator
+            return this
+        }
     }
 
     fun copy(builder: Configuration.() -> Unit): FilterOptionMapping {
-        val newConfig = Configuration()
-        newConfig.mapping.putAll(config.mapping)
-        newConfig.opBuilder = config.opBuilder
-        newConfig.builder()
-        return FilterOptionMapping(newConfig)
+        return FilterOptionMapping(Configuration().copyFrom(config).apply(builder))
     }
 }
