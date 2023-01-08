@@ -4,6 +4,7 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 
 @Suppress("unused")
+@Deprecated("use UrlParameters instead")
 class UrlQueryParameter constructor() : HashMap<String, MutableCollection<String>>() {
 
     var keyCodec = UTF8UrlCodec

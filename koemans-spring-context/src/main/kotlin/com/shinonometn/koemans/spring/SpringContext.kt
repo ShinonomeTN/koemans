@@ -3,11 +3,12 @@ package com.shinonometn.koemans.spring
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.GenericApplicationContext
+import org.springframework.context.support.StaticApplicationContext
 
 /**
  * Create an empty AnnotationConfigApplicationContext.
  *
- * *You should invoke `refresh()` and `start()` before using it.*
+ * *You should configure it and invoke `refresh()` then `start()` before using it.*
  */
 fun annotationDrivenApplicationContext(configure: (SpringContextConfiguration.() -> Unit)? = null): GenericApplicationContext {
     val applicationContext = AnnotationConfigApplicationContext()
@@ -19,7 +20,8 @@ fun annotationDrivenApplicationContext(configure: (SpringContextConfiguration.()
  * Create an AnnotationConfigApplicationContext, use [autoConfigurationClasses].
  *
  * Returns an application context that waiting to be started.
- * *You should invoke `start()` before using it.*
+ *
+ * *You should invoke `refresh()` then `start()` before using it.*
  */
 fun annotationDrivenApplicationContext(
     vararg autoConfigurationClasses: Class<*>,
@@ -28,7 +30,6 @@ fun annotationDrivenApplicationContext(
     val applicationContext = AnnotationConfigApplicationContext()
     SpringContextConfiguration(configure).applyOn(applicationContext)
     applicationContext.register(*autoConfigurationClasses)
-    applicationContext.refresh()
     return applicationContext
 }
 
@@ -36,7 +37,7 @@ fun annotationDrivenApplicationContext(
  * Create an AnnotationConfigApplicationContext, scanning given [scanPackageNames].
  *
  * Returns an application context that waiting to be started
- * *You should invoke `start()` before using it.*
+ * *You should invoke `refresh()` then `start()` before using it.*
  */
 fun annotationDrivenApplicationContext(
     vararg scanPackageNames: String,
@@ -45,8 +46,25 @@ fun annotationDrivenApplicationContext(
     val applicationContext = AnnotationConfigApplicationContext()
     SpringContextConfiguration(configure).applyOn(applicationContext)
     applicationContext.scan(*scanPackageNames)
-    applicationContext.refresh()
     return applicationContext
+}
+
+/**
+ * Create an empty spring context
+ * *You should invoke `refresh()` then `start()` before using it.*
+ */
+fun staticApplicationContext(
+    configure: (SpringContextConfiguration.() -> Unit)? = null
+): GenericApplicationContext {
+    val applicationContext = StaticApplicationContext()
+    SpringContextConfiguration(configure).applyOn(applicationContext)
+    return applicationContext
+}
+
+/** refresh and start the application context*/
+fun GenericApplicationContext.bootstrap() {
+    refresh()
+    start()
 }
 
 inline fun <reified T> ApplicationContext.find(): T = getBean(T::class.java)

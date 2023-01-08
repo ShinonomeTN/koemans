@@ -1,19 +1,9 @@
 package com.shinonometn.koemans.web
 
 import io.ktor.http.*
-import kotlin.collections.ArrayList
-import kotlin.collections.Collection
-import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.all
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.first
-import kotlin.collections.forEach
 import kotlin.collections.set
-import kotlin.collections.toList
-import kotlin.collections.zip
 
 @DslMarker
 annotation class ValidatorBuilderDsl
@@ -180,17 +170,5 @@ class Validator internal constructor(private val policy: Policy, private val con
         block?.invoke(newConfig)
 
         return Validator(newPolicy, newConfig)
-    }
-}
-
-/**
- * Vararg validator
- */
-@ValidatorBuilderDsl
-fun Validator.Configuration.vararg(hint: String = "invalid_value", logic: (String) -> Boolean) = validator(hint) { param ->
-    when (param) {
-        is String -> logic(param)
-        is List<*> -> param.all { logic(it as String) }
-        else -> false
     }
 }

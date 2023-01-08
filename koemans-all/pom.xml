@@ -83,6 +83,12 @@
             <artifactId>koemans-web-ktor-auth-session</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-server-netty</artifactId>
+            <version>${ktor.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -4,6 +4,7 @@ import com.shinonometn.koemans.exposed.SortOptionMapping
 import com.shinonometn.koemans.exposed.SortRequest
 import io.ktor.application.*
 
+@Deprecated("Deprecated. Use builder instead", ReplaceWith("SortRequest.from(call.request.queryParameters, mapping)"))
 fun ApplicationCall.receiveSortOptions(mapping: SortOptionMapping): SortRequest {
     val params = request.queryParameters.getAll("sort")?.takeIf {
         it.isNotEmpty()

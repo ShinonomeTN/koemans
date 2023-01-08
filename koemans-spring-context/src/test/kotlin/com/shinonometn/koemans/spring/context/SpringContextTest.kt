@@ -1,9 +1,6 @@
 package com.shinonometn.koemans.spring.context
 
-import com.shinonometn.koemans.spring.annotationDrivenApplicationContext
-import com.shinonometn.koemans.spring.find
-import com.shinonometn.koemans.spring.propertySourcePlaceholderSupport
-import com.shinonometn.koemans.spring.useHoconPropertySource
+import com.shinonometn.koemans.spring.*
 import org.junit.Test
 import org.springframework.core.io.ClassPathResource
 import kotlin.test.assertEquals
@@ -24,7 +21,7 @@ class SpringContextTest {
             propertySourcePlaceholderSupport()
             useHoconPropertySource("application", ClassPathResource("application.conf"))
         }
-        context.start()
+        context.bootstrap()
 
         val mainConfig = context.find<TestApplicationAutoConfiguration>()
         assertEquals("Hello World!", mainConfig.applicationTitle)

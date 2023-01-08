@@ -1,6 +1,8 @@
 package com.shinonometn.koemans.exposed.database
 
-import com.shinonometn.koemans.utils.UrlQueryParameter
+import com.shinonometn.koemans.utils.MutableUrlParameters
+import com.shinonometn.koemans.utils.mutableUrlParametersOf
+import com.shinonometn.koemans.utils.urlEncoded
 import org.jetbrains.exposed.sql.Database
 import org.mariadb.jdbc.Driver
 import javax.sql.DataSource
@@ -18,15 +20,17 @@ class MariaDB(val name: String, override val db: Database, override val datasour
         override var urlFactory: () -> String = this::buildUrl
 
         /** Use a url instead of detailed configuration */
-        fun url(url : String) { urlFactory = { url } }
+        fun url(url: String) {
+            urlFactory = { url }
+        }
 
         override val supportUsernamePassword = true
 
         public override var username: String? = ""
         public override var password: String? = ""
 
-        private val urlParams = UrlQueryParameter()
-        fun parameters(builder: UrlQueryParameter.() -> Unit) {
+        private val urlParams = mutableUrlParametersOf()
+        fun parameters(builder: MutableUrlParameters.() -> Unit) {
             urlParams.builder()
         }
 
@@ -50,7 +54,7 @@ class MariaDB(val name: String, override val db: Database, override val datasour
         private fun buildUrl(): String {
             val database = this.database ?: error("Please provide database name.")
             val url = "jdbc:mariadb://$hostInfo/$database"
-            return if (urlParams.isNotEmpty()) "$url?${urlParams.toUrlEncoded()}" else url
+            return if (urlParams.isNotEmpty()) "$url?${urlParams.urlEncoded(false)}" else url
         }
     }
 

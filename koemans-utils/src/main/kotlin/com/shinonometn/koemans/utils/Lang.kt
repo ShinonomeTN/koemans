@@ -22,6 +22,12 @@ fun <T> resultOf(provider: () -> T): Result<T> {
     }
 }
 
+/** Throw an illegal state exception with optional message and reason */
+fun illegalState(message: String? = null, cause: Throwable? = null): Nothing = throw IllegalStateException(message, cause)
+
+/** Throw an illegal argument exception with optional message and reason */
+fun illegalArgument(message: String? = null, cause: Throwable? = null): Nothing = throw IllegalArgumentException(message, cause)
+
 /**
  * Take if type match
  */

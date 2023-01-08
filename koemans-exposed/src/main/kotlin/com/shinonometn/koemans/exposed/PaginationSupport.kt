@@ -1,5 +1,7 @@
 package com.shinonometn.koemans.exposed
 
+import com.shinonometn.koemans.utils.UrlParameters
+import com.shinonometn.koemans.utils.isNumber
 import org.jetbrains.exposed.sql.Query
 import org.jetbrains.exposed.sql.ResultRow
 import kotlin.math.ceil
@@ -16,6 +18,15 @@ class PageRequest(val page: Long = 0, val size: Long = 20) {
     fun <T> toPage(total: Long, hasNext: Boolean, content: Collection<T>): Page<T> {
         return Page(offset, size, total, hasNext, content)
     }
+
+    companion object
+}
+
+/** Build page request directly from url parameters */
+fun PageRequest.Companion.from(parameters: UrlParameters): PageRequest {
+    val page = parameters["page"]?.firstOrNull()?.takeIf { it.isNumber() }?.toLong() ?: 0
+    val size = parameters["size"]?.firstOrNull()?.takeIf { it.isNumber() && it.toInt() > 0 }?.toLong() ?: 20
+    return PageRequest(page, size)
 }
 
 /**

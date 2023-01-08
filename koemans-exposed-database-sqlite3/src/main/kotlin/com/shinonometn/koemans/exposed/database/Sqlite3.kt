@@ -1,6 +1,8 @@
 package com.shinonometn.koemans.exposed.database
 
-import com.shinonometn.koemans.utils.UrlQueryParameter
+import com.shinonometn.koemans.utils.MutableUrlParameters
+import com.shinonometn.koemans.utils.mutableUrlParametersOf
+import com.shinonometn.koemans.utils.urlEncoded
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
 import org.jetbrains.exposed.sql.SqlLogger
@@ -51,17 +53,15 @@ class Sqlite3 internal constructor(
 
         override var defaultTransactionLevel: TransactionLevel? = TransactionLevel.STRICT
 
-        private var urlParams : UrlQueryParameter? = null
+        private var urlParams: MutableUrlParameters? = null
 
         /**
          * Set url parameters after connection url
          */
-        fun parameters(builder : UrlQueryParameter.() -> Unit) {
-            if(urlParams == null) {
-                urlParams = UrlQueryParameter(builder)
-            } else {
-                urlParams!!.builder()
-            }
+        fun parameters(builder: MutableUrlParameters.() -> Unit) {
+            val params = urlParams ?: mutableUrlParametersOf()
+            params.builder()
+            urlParams = params
         }
 
         @Deprecated("Use 'dataSource' instead")
@@ -75,7 +75,7 @@ class Sqlite3 internal constructor(
          *
          * if [mkdirs] is true, [directory] will be created if not exists.
          */
-        fun inFile(name : String, directory : String, mkdirs: Boolean = false) {
+        fun inFile(name: String, directory: String, mkdirs: Boolean = false) {
             inFile(name, Paths.get(directory), mkdirs)
         }
 
@@ -100,10 +100,10 @@ class Sqlite3 internal constructor(
          *
          * if [mkdirs] is true, parent directory will be created if not exists.
          */
-        fun inFile(filePath : String, mkdirs: Boolean = false) {
+        fun inFile(filePath: String, mkdirs: Boolean = false) {
             val file = File(filePath)
             val parentFile = file.parentFile
-            if(!parentFile.exists() && mkdirs && !parentFile.mkdirs()) {
+            if (!parentFile.exists() && mkdirs && !parentFile.mkdirs()) {
                 error("Could not create folder '${parentFile.absoluteFile}' for database file '${file.name}'.")
             }
             inFile(file)
@@ -113,12 +113,12 @@ class Sqlite3 internal constructor(
          * Use a file as sqlite3 database
          * The filename without extension will be the name of this database
          */
-        fun inFile(file : File) {
+        fun inFile(file: File) {
             this.name = file.nameWithoutExtension
             urlFactory = {
                 val url = "jdbc:sqlite:${file.absoluteFile}"
                 val urlParams = this.urlParams
-                if(urlParams!= null && urlParams.isNotEmpty()) "$url?${urlParams.toUrlEncoded()}" else url
+                if (!urlParams.isNullOrEmpty()) "$url?${urlParams.urlEncoded()}" else url
             }
         }
 
@@ -132,7 +132,7 @@ class Sqlite3 internal constructor(
             urlFactory = {
                 val url = "jdbc:sqlite:file:${name}?mode=memory"
                 val urlParams = this.urlParams
-                if(urlParams != null && urlParams.isNotEmpty()) "$url&${urlParams.toUrlEncoded()}" else "$url&cache=shared"
+                if (!urlParams.isNullOrEmpty()) "$url&${urlParams.urlEncoded()}" else "$url&cache=shared"
             }
         }
 

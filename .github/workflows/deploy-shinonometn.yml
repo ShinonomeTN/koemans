@@ -5,7 +5,7 @@ name: Deployment
 
 on:
   release:
-    types: [release, prerelease]
+    types: [published, released, prereleased]
 
 env:
   NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}

@@ -1,22 +1,51 @@
 package com.shinonometn.koemans.exposed
 
+import com.shinonometn.koemans.utils.UrlParameters
 import org.jetbrains.exposed.sql.*
-import kotlin.reflect.KClass
 
 typealias PredicateFragmentBuilder = SqlExpressionBuilder.(FilterOptionMapping.ValueWrapper) -> Op<Boolean>
 
 class FilterRequest internal constructor(internal var op: Op<Boolean>, val parameters: List<String>) {
+    @Deprecated("Deprecated", ReplaceWith("appendAnd()"))
     fun append(predicate: SqlExpressionBuilder.() -> Op<Boolean>): Op<Boolean> {
+        return appendAnd(predicate)
+    }
+
+    /** Append predicate using AND op*/
+    fun appendAnd(predicate: SqlExpressionBuilder.() -> Op<Boolean>): Op<Boolean> {
         op = op.and(predicate)
         return op
     }
+
+    /** Append predicate using OR op*/
+    fun appendOr(predicate: SqlExpressionBuilder.() -> Op<Boolean>): Op<Boolean> {
+        op = op.or(predicate)
+        return op
+    }
+
+    fun isEmpty() = (op == Op.TRUE)
+
+    companion object
 }
 
-fun FieldSet.selectBy(filterRequest: FilterRequest, additionalBuilder: (SqlExpressionBuilder.(Op<Boolean>) -> Op<Boolean>)? = null): Query {
+/** build filter request directly from url parameters */
+fun FilterRequest.Companion.from(parameters: UrlParameters, mapping: FilterOptionMapping): FilterRequest {
+    return mapping(parameters)
+}
+
+/**
+ * Select by a filter request
+ *
+ * @param filterRequest filter request built from FilterOptionMapping
+ * @param additionalBuilder chain the filter request's predicates with custom predicates
+ *
+ * @return Exposed query
+ */
+fun FieldSet.selectBy(filterRequest: FilterRequest, additionalBuilder: (SqlExpressionBuilder.(filtering : Op<Boolean>) -> Op<Boolean>)? = null): Query {
 
     // When no params in filter, use the additional builder.
     // If no provided builder, just return selectAll()
-    if (filterRequest.parameters.isEmpty()) return when (additionalBuilder) {
+    if (filterRequest.isEmpty()) return when (additionalBuilder) {
         null -> selectAll()
         else -> select { additionalBuilder(this, Op.TRUE) }
     }
@@ -29,24 +58,24 @@ fun FieldSet.selectBy(filterRequest: FilterRequest, additionalBuilder: (SqlExpre
     }
 }
 
-typealias FilterParams = Map<String, List<String>?>
-
-class FilterOptionMapping internal constructor(val config: Configuration) {
+/**
+ *
+ * Filter option mapping
+ *
+ */
+class FilterOptionMapping internal constructor(private val config: Configuration) {
 
     constructor(builder: Configuration.() -> Unit) : this(Configuration()) {
         config.builder()
     }
 
-    operator fun invoke(params: FilterParams) = buildFilterRequest(params)
+    operator fun invoke(params: UrlParameters) = buildFilterRequest(params)
 
-    private fun buildFilterRequest(params: FilterParams): FilterRequest {
+    private fun buildFilterRequest(params: UrlParameters): FilterRequest {
         val validator = config.validator
         if(validator != null) validator(params)
 
-        val keys = config.mapping.keys.filter {
-            val param = params[it]
-            param != null && param.isNotEmpty()
-        }.toList()
+        val keys = config.mapping.keys.filter { !params[it].isNullOrEmpty() }.toList()
 
         val fragments = keys.associateWith {
             config.mapping[it]!!.invoke(SqlExpressionBuilder, ValueWrapper(it, params))
@@ -58,18 +87,28 @@ class FilterOptionMapping internal constructor(val config: Configuration) {
         return FilterRequest(op, keys)
     }
 
-    class ValueWrapper(val name: String, val parameters: FilterParams) {
+    class ValueWrapper(val name: String, val parameters: UrlParameters) {
+        /** take first value */
         fun asString() = parameters[name]!!.first()
-        fun asList(): List<String> = parameters[name]!!
-        fun <T> convertTo(converter : (List<String>) -> T) = converter(parameters[name]!!)
+
+        /** get all values */
+        @Deprecated("Deprecated", ReplaceWith("asStringList()"), DeprecationLevel.WARNING)
+        fun asList(): List<String> = asStringList()
+
+        /** get all values */
+        fun asStringList() = parameters[name]!!
+
+        fun <T> convertTo(converter: (List<String>) -> T) = converter(parameters[name]!!)
     }
 
     class Configuration {
         internal val mapping = LinkedHashMap<String, PredicateFragmentBuilder>()
 
-        var validator : ((FilterParams) -> Unit)? = null
+        /** Set the validator for incoming parameters */
+        var validator : ((UrlParameters) -> Unit)? = null
 
-        var opBuilder: SqlExpressionBuilder.(Map<String, Op<Boolean>>) -> Op<Boolean> = {
+        /** overwrite the default sql op builder */
+        var opBuilder: SqlExpressionBuilder.(predicateMap : Map<String, Op<Boolean>>) -> Op<Boolean> = {
             AndOp(it.values.toList())
         }
 
@@ -81,45 +120,16 @@ class FilterOptionMapping internal constructor(val config: Configuration) {
         fun exclude(vararg name: String) {
             name.forEach { mapping.remove(it) }
         }
+
+        internal fun copyFrom(another: Configuration): Configuration {
+            mapping.putAll(another.mapping)
+            opBuilder = another.opBuilder
+            validator = another.validator
+            return this
+        }
     }
 
     fun copy(builder: Configuration.() -> Unit): FilterOptionMapping {
-        val newConfig = Configuration()
-        newConfig.mapping.putAll(config.mapping)
-        newConfig.opBuilder = config.opBuilder
-        newConfig.builder()
-        return FilterOptionMapping(newConfig)
+        return FilterOptionMapping(Configuration().copyFrom(config).apply(builder))
     }
-}
-
-fun FilterOptionMapping.ValueWrapper.asLong() = convertTo { it.first().toLong() }
-
-fun FilterOptionMapping.ValueWrapper.asLongList() = convertTo { it.map { s -> s.toLong() } }
-
-fun FilterOptionMapping.ValueWrapper.asInt() = convertTo { it.first().toInt() }
-
-fun FilterOptionMapping.ValueWrapper.asIntList() = convertTo { it.map { s -> s.toInt() } }
-
-fun FilterOptionMapping.ValueWrapper.asBoolean() = convertTo { it.first() != "false" }
-
-fun FilterOptionMapping.ValueWrapper.asBooleanList() = convertTo { it.map { s -> s != "false" } }
-
-fun FilterOptionMapping.ValueWrapper.asDouble() = convertTo { it.first().toDouble() }
-
-fun FilterOptionMapping.ValueWrapper.asDoubleList() = convertTo { it.map { s -> s.toDouble() } }
-
-fun FilterOptionMapping.ValueWrapper.asFloat() = convertTo { it.first().toFloat() }
-
-fun FilterOptionMapping.ValueWrapper.asFloatList() = convertTo { it.map { s -> s.toFloat() } }
-
-fun FilterOptionMapping.ValueWrapper.asBigDecimal() = convertTo { it.first().toBigDecimal() }
-
-fun FilterOptionMapping.ValueWrapper.asBigDecimalList() = convertTo { it.map { s -> s.toBigDecimal() } }
-
-fun <T : Enum<T>> FilterOptionMapping.ValueWrapper.asEnum(klazz : KClass<T>): T = convertTo {
-    klazz.java.enumConstants.first { e -> it.first() == e.name }
-}
-
-fun <T : Enum<T>> FilterOptionMapping.ValueWrapper.asEnumList(klazz: KClass<T>) : List<T> = convertTo {
-    it.map { s -> klazz.java.enumConstants.first { e -> e.name == s } }
 }
