@@ -2,21 +2,15 @@ package com.shinonometn.koemans
 
 import com.shinonometn.koemans.exposed.SortOptionMapping
 import com.shinonometn.koemans.exposed.SortRequest
+import com.shinonometn.koemans.exposed.from
 import io.ktor.application.*
+import io.ktor.util.*
 
-@Deprecated("Deprecated. Use builder instead", ReplaceWith("SortRequest.from(call.request.queryParameters, mapping)"))
-fun ApplicationCall.receiveSortOptions(mapping: SortOptionMapping): SortRequest {
-    val params = request.queryParameters.getAll("sort")?.takeIf {
-        it.isNotEmpty()
-    } ?: emptyList()
-
-    return mapping(params.mapNotNull { it.splitToPair() })
-}
-
-private fun String.splitToPair(): Pair<String, String?>? {
-    val array = split(",").takeIf { it.isNotEmpty() } ?: return null
-    return when (array.size) {
-        1 -> Pair(array[0], null)
-        else -> Pair(array[0], array[1])
-    }
-}
+@Deprecated(
+    "Deprecated. Use builder instead",
+    ReplaceWith(
+        "SortRequest.from(call.request.queryParameters, mapping)",
+        "com.shinonometn.koemans.exposed.SortRequest"
+    )
+)
+fun ApplicationCall.receiveSortOptions(mapping: SortOptionMapping) = SortRequest.from(request.queryParameters.toMap(), mapping)
