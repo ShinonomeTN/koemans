@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+set -e
+
+[ -f "./mvnw" ] || { echo "Please execute this script under project root."; exit 1; }
+NEW_VERSION="$1"
+[ -n "$NEW_VERSION" ] || { echo "Usage: update-version <new_version_code>"; exit 0; }
+
+./mvnw versions:set -DnewVersion=$NEW_VERSION
+./mvnw versions:commit
+
+echo "Finished."
