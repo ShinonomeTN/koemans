@@ -88,3 +88,9 @@ fun Int.toByteArray(): ByteArray {
         this.toByte()
     )
 }
+
+/** If true, return 1 else return 0 */
+fun Boolean.toByte(): Byte = if (this) 0b0000_0001 else 0
+
+/** If true, return 1 else return 0*/
+fun Boolean.toInt(): Int = if (this) 1 else 0
