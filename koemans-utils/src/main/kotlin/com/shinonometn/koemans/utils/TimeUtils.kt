@@ -18,3 +18,6 @@ fun String.toLocalDateTimeOrNull(formatter: DateTimeFormatter = defaultLocalDate
 } catch (ignored: Exception) {
     null
 }
+
+/** Formatting this LocalDateTime using defaultLocalDateTimeFormatter */
+fun LocalDateTime.format(): String = format(defaultLocalDateTimeFormatter)
