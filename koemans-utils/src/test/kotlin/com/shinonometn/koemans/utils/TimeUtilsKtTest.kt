@@ -19,4 +19,11 @@ class TimeUtilsKtTest : TestCase() {
         val formattedNow = now.format()
         logger.info("Now is : {}. reformatted: {}", formattedNow, formattedNow.toLocalDateTime())
     }
+
+    @Test
+    fun testToLocalDateTimeNoSeconds() {
+        val datetimeString = "2022-12-24T22:59"
+        val parsed = datetimeString.toLocalDateTime()
+        logger.info("Date in string: {}, parsed : {}", datetimeString, parsed)
+    }
 }
