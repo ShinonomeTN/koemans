@@ -4,7 +4,8 @@
 name: Test
 
 on:
-  push: { branches: [ master ] }
+  push:
+    branches: [ master ]
 
 jobs:
   build:
