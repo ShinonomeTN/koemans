@@ -8,7 +8,7 @@ import org.mariadb.jdbc.Driver
 import javax.sql.DataSource
 import kotlin.properties.Delegates.observable
 
-class MariaDB(val name: String, override val db: Database, override val datasource: DataSource?) : SqlDatabase {
+class MariaDB(val name: String, override val database: Database, override val datasource: DataSource?) : SqlDatabase {
 
     class Configuration : SqlDatabaseConfiguration() {
 

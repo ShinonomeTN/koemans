@@ -10,18 +10,17 @@ typealias DataSourceProvider = SqlDatabaseConfiguration.() -> DataSource?
 
 interface SqlDatabase {
     /** The exact Exposed Database */
-    val db : Database
+    val database: Database
 
     /** The datasource this Exposed Database currently used. `null` if no datasource. */
     val datasource : DataSource?
 
     operator fun <T> invoke(transactionLevel: TransactionLevel? = null, statement: Transaction.() -> T) : T = transaction(
-        transactionLevel?.level ?: db.transactionManager.defaultIsolationLevel,
-        db.transactionManager.defaultRepetitionAttempts,
-        db
-    ) {
-        statement()
-    }
+        transactionIsolation = transactionLevel?.level ?: database.transactionManager.defaultIsolationLevel,
+        repetitionAttempts = database.transactionManager.defaultRepetitionAttempts,
+        db = database,
+        statement = statement
+    )
 }
 
 /**

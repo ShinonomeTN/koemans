@@ -19,7 +19,7 @@ import kotlin.properties.Delegates
 
 class Sqlite3 internal constructor(
     val name: String,
-    override val db: Database,
+    override val database: Database,
     override val datasource: DataSource?
 ) : SqlDatabase {
 
