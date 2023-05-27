@@ -80,6 +80,12 @@
 
         <dependency>
             <groupId>io.ktor</groupId>
+            <artifactId>ktor-server-core</artifactId>
+            <version>${ktor.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.ktor</groupId>
             <artifactId>ktor-server-netty</artifactId>
             <version>${ktor.version}</version>
         </dependency>
