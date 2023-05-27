@@ -32,12 +32,6 @@
 
         <dependency>
             <groupId>com.shinonometn</groupId>
-            <artifactId>koemans-event-hub</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.shinonometn</groupId>
             <artifactId>koemans-exposed-database</artifactId>
             <version>${project.version}</version>
         </dependency>
