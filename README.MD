@@ -123,11 +123,24 @@ fun Application.mainModule() {
 
 ```
 
-Example above is using Ktor's config flavor to start an application. You can also use code flavor:
+Example above is using Ktor's config flavor to start an application, it requires the main class to be the engine class 
+(normally is `io.ktor.server.netty.EngineMain` or other Engine's Main you're using). 
+
+You can also bootstrap a server by codes:
 
 ```kotlin
-
+fun main() {
+    embeddedServer(Netty, port = 8080) {
+        configureBySpring {
+            annotationDriven(ApplicationAutoConfiguration::class.java) {
+                // Do your spring configuration here
+            }
+        }
+    }.start(wait = true)
+}
 ```
+
+* Hocon configuration supports for this method is sill in-progress...
 
 ### Validating parameters
 
