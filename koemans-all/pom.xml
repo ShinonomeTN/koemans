@@ -38,12 +38,6 @@
 
         <dependency>
             <groupId>com.shinonometn</groupId>
-            <artifactId>koemans-exposed-database-sqlite3</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.shinonometn</groupId>
             <artifactId>koemans-exposed-datasource-hikari</artifactId>
             <version>${project.version}</version>
         </dependency>
