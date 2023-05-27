@@ -11,9 +11,9 @@
 
 Koemans is an util set for us to building Ktor based web applications.
 
-> Now ktor's latest version is 2.x, but Koemans was written for 1.x. We are planning to upgrading to the ktor 2.x
-> version.
-> This will need some time because it will break our existing projects due to the incompatible between ktor 1.x and 2.x.
+> Now ktor's latest version is 2.x, but Koemans' web was written for 1.x. 
+> We are planning to upgrading to the ktor 2.x version. This will need some time because it will break our 
+> existing projects due to the incompatible between ktor 1.x and 2.x.
 > So, ktor upgrade will available since Koemans 2.x
 
 ## Features
@@ -55,7 +55,17 @@ or just some modules.
 // Exposed supports only
 implementation("org.shinonometn:koemans-exposed:${koemans.version}")
 implementation("org.shinonometn:koemans-exposed-database:${koemans.version}")
+```
+
+When import modules individually, you need to manual import `ktor-server-core` and database drivers when needed:
+
+```groovy
+implementation "io.ktor:ktor-server-core:1.6.8"
+implementation "io.ktor:ktor-server-netty:1.6.8"
+// For Sqlite3 
 implementation("org.shinonometn:koemans-exposed-database-sqlite3:${koemans.version}")
+// For MariaDB
+implementation("org.shinonometn:koemans-exposed-database-mariadb:${koemans.version}")
 ```
 
 ### Create a simple application with spring context
@@ -110,6 +120,12 @@ fun Application.mainModule() {
         }
     }
 }
+
+```
+
+Example above is using Ktor's config flavor to start an application. You can also use code flavor:
+
+```kotlin
 
 ```
 
@@ -172,8 +188,9 @@ fun Route.queryRoute() {
 
 ### Connect to database
 
+Currently, we support Sqlite3 and MariaDB. 
+
 ```kotlin
-// We only support sqlite3 for now.
 val database = sqlDatabase(Sqlite3) {
     inFile("database_name", Paths.get("/path/to/folder"))
     // or you wish an inmemory database
