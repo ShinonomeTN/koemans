@@ -21,9 +21,12 @@ suspend fun <T> background(executor: Executor = Dispatchers.IO.asExecutor(), blo
     }
 }
 
+/** Execute blocking code on executor, suspend current coroutine. */
+suspend fun <T> Executor.executeSuspended(block: () -> T): T = background(this, block)
+
 /**
  * If job is finish running
  * @return is finished
  */
-val Job.isDead : Boolean
+val Job.isDead: Boolean
     get() = isCancelled || isCompleted

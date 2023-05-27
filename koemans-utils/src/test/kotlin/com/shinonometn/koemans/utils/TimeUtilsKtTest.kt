@@ -1,0 +1,29 @@
+package com.shinonometn.koemans.utils
+
+import junit.framework.TestCase
+import org.junit.Test
+import org.slf4j.LoggerFactory
+import java.time.LocalDateTime
+
+class TimeUtilsKtTest : TestCase() {
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
+    @Test
+    fun testToDuration() {
+        logger.info("1 hour (h1) to duration is: {}", "1h".toDuration())
+    }
+
+    @Test
+    fun testToLocalDateTime() {
+        val now = LocalDateTime.now()
+        val formattedNow = now.format()
+        logger.info("Now is : {}. reformatted: {}", formattedNow, formattedNow.toLocalDateTime())
+    }
+
+    @Test
+    fun testToLocalDateTimeNoSeconds() {
+        val datetimeString = "2022-12-24T22:59"
+        val parsed = datetimeString.toLocalDateTime()
+        logger.info("Date in string: {}, parsed : {}", datetimeString, parsed)
+    }
+}

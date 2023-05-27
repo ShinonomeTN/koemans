@@ -34,8 +34,17 @@ fun PageRequest.Companion.from(parameters: UrlParameters): PageRequest {
  */
 fun <T> Query.pagingBy(pageRequest: PageRequest, countQuery: Boolean = true, converter: (ResultRow) -> T): Page<T> {
     val query = this
+
+    // If request count query then get total element count
     val count = if (countQuery) query.count() else -1
-    val hasNext = query.limit(1, pageRequest.offset + pageRequest.size + 1).count() > 0
+
+    val hasNext = when {
+        // Compute it if countQuery enabled
+        countQuery -> count > (pageRequest.offset + pageRequest.size)
+        // or else make a prefetch query
+        else -> query.limit(1, pageRequest.offset + pageRequest.size).count() > 0
+    }
+
     val result = query.limit(pageRequest.size.toInt(), pageRequest.offset).map(converter)
 
     return pageRequest.toPage(count, hasNext, result)
