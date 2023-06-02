@@ -15,7 +15,7 @@
 
         <ktor.version>1.6.8</ktor.version>
 
-        <exposed.version>0.41.1</exposed.version>
+        <exposed.version>0.40.1</exposed.version>
 
         <spring.context.version>5.3.7</spring.context.version>
 

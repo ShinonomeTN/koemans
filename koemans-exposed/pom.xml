@@ -21,7 +21,12 @@
         <dependency>
             <groupId>org.jetbrains.exposed</groupId>
             <artifactId>exposed-core</artifactId>
-            <!--suppress MavenPackageUpdate -->
+            <version>${exposed.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.exposed</groupId>
+            <artifactId>exposed-dao</artifactId>
             <version>${exposed.version}</version>
         </dependency>
 
