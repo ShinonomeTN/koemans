@@ -17,9 +17,11 @@
     </properties>
 
     <dependencies>
+
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
+            <groupId>com.shinonometn</groupId>
+            <artifactId>koemans-utils</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>

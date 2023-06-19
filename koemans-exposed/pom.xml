@@ -30,14 +30,13 @@
             <version>${exposed.version}</version>
         </dependency>
 
-        <!-- Those are test dependencies -->
-
         <dependency>
             <groupId>org.jetbrains.exposed</groupId>
             <artifactId>exposed-jdbc</artifactId>
             <version>${exposed.version}</version>
-            <scope>test</scope>
         </dependency>
+
+        <!-- Those are test dependencies -->
 
         <dependency>
             <groupId>org.xerial</groupId>

@@ -13,7 +13,7 @@ class SimpleQueryStatement<T>(@Language("sql") private val sql: String, private 
     override fun prepareSQL(transaction: Transaction) = sql
     override fun arguments(): Iterable<Iterable<Pair<IColumnType, Any?>>> = emptyList()
     override fun PreparedStatementApi.executeInternal(transaction: Transaction): T? {
-        return executeQuery().use { transform(it) }
+        return transform(executeQuery())
     }
 }
 

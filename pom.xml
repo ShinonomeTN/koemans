@@ -10,10 +10,11 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlinx.coroutine.version>1.4.3</kotlinx.coroutine.version>
-        <kotlin.version>1.6.0</kotlin.version>
-        <logback.version>1.2.3</logback.version>
+        <kotlin.version>1.8.0</kotlin.version>
+        <logback.version>1.2.4</logback.version>
 
         <ktor.version>1.6.8</ktor.version>
+        <ktor2.version>2.3.1</ktor2.version>
 
         <exposed.version>0.40.1</exposed.version>
 
@@ -48,6 +49,7 @@
         <module>koemans-exposed-datasource-hikari</module>
 
         <module>koemans-all</module>
+        <module>koemans-web-ktor2</module>
     </modules>
 
     <dependencies>
@@ -140,7 +142,13 @@
         <dependencies>
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-stdlib</artifactId>
+                <artifactId>kotlin-stdlib-jdk8</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib-jdk7</artifactId>
                 <version>${kotlin.version}</version>
             </dependency>
 
