@@ -8,9 +8,12 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.slf4j.LoggerFactory
 import kotlin.test.assertTrue
 
 class FilterQuerySupportTest {
+    private val logger = LoggerFactory.getLogger(FilterQuerySupportTest::class.java)
+
     private val database = Database.connect(HikariDataSource(HikariConfig().apply {
         jdbcUrl = "jdbc:sqlite:file:test_filter_query_support?mode=memory"
         maximumPoolSize = 1
@@ -62,7 +65,7 @@ class FilterQuerySupportTest {
             )
         )
 
-        println(filter.parameters.joinToString(",") { it })
+        logger.info(filter.parameters.joinToString(","))
     }
 
     @Test
