@@ -11,23 +11,24 @@
 
 Koemans is an util set for us to building Ktor based web applications.
 
-> Now ktor's latest version is 2.x, but Koemans' web was written for 1.x. 
-> We are planning to upgrading to the ktor 2.x version. This will need some time because it will break our 
-> existing projects due to the incompatible between ktor 1.x and 2.x.
-> So, ktor upgrade will available since Koemans 2.x
+> We're still having some ktor 1.x projects, so we decided to continue supporting ktor 1.6.8 .
+> Ktor 2.x supports will be in modules starts with 'koemans-web-ktor2'.
+> 
+> For naming-consistence and the plans for future modules, 'koemans-web' was now renamed to 'koemans-web-ktor'. 
 
 ## Features
 
+For Web (Ktor): 
 - Parameter validator for ktor `Parameters`.
 - Sprint Context support for ktor and hocon configuration support for SpringContext.
+
+For database:
 - `sqlDatabase` support for Exposed.
-- paging, filtering and sorting query support for Exposed.
-- a simple coroutine based event hub. (not encouraged for use, Spring's `ApplicationEvent` is better.)
+- Paging, filtering and sorting query support for Exposed.
 
 ## Modules
 
 - koemans-all: all modules, with experimental utils waiting for categorize.
-- koemans-event-hub: a little event hub. Not encouraged for use.
 - koemans-exposed: Exposed support. Paging, filetering and sorting, query supports.
 - koemans-exposed-database: Database support, including a dsl `sqlDatabase` for creating database connection.
 - koemans-exposed-database-sqlite3: Sqlite3 support.
