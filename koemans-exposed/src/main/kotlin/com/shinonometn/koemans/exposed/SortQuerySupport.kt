@@ -10,13 +10,13 @@ import kotlin.reflect.KProperty
 class SortOption(val column: Column<*>, val sortOrder: SortOrder)
 
 /** A sort request */
-class SortRequest(internal val mapping: Map<String, SortOption>) {
-    val fields = mapping.map { it.key to it.value.sortOrder }
+class SortRequest(internal val mapping: Collection<Pair<String, SortOption>>) {
+    val fields = mapping
 
     fun isEmpty() = mapping.isEmpty()
 
     companion object {
-        private val emptySortOption = SortRequest(emptyMap())
+        private val emptySortOption = SortRequest(emptyList())
 
         fun empty() = emptySortOption
     }
@@ -37,11 +37,9 @@ fun SortRequest.Companion.from(parameters: UrlParameters, mapping: SortOptionMap
  */
 fun Query.orderBy(sortRequest: SortRequest): Query {
     if (sortRequest.isEmpty()) return this
-    val options = sortRequest.mapping.map { it.value.column to it.value.sortOrder }
+    val options = sortRequest.mapping.map { (_, option) -> option.column to option.sortOrder }
     return orderBy(*options.toTypedArray())
 }
-
-class SortOptionValidationException(message: String) : Exception(message)
 
 class SortOptionMapping internal constructor(private val config: Configuration) {
 
@@ -49,29 +47,65 @@ class SortOptionMapping internal constructor(private val config: Configuration) 
         config.builder()
     }
 
-    companion object {
-        private val allowedSortOptions = SortOrder.values().associateBy { it.name }
+    init {
+        config.updateImpliedFields()
     }
 
-    operator fun invoke(pairs: Collection<Pair<String, String?>>) = buildSortRequest(pairs)
+    companion object {
+        private val allowedSortOptions = SortOrder.values().flatMap {
+            listOf(it.name to it, it.name.lowercase() to it)
+        }.toMap()
+    }
+
+    operator fun invoke(pairs: Collection<Pair<String, String?>> = emptyList()) = buildSortRequest(pairs)
+
+    val fields = config.fields.values
 
     private fun buildSortRequest(pairs: Collection<Pair<String, String?>>): SortRequest {
         val mapping = config.fields
-        val parameters = pairs.toMap()
+        val parameters = pairs.distinctBy { it.first }
+        val result = mutableListOf<Pair<String, SortOption>>()
 
-        val result = mapping.map { (fieldName, option) ->
-            val sortOrder = when (val expected = parameters[fieldName]) {
-                null -> option.sortOrder
-                else -> allowedSortOptions[expected.uppercase()] ?: throw SortOptionValidationException("invalid_sort_option:$fieldName,$expected")
-            }
-            fieldName to SortOption(option.column, sortOrder)
-        }.takeIf { it.isNotEmpty() } ?: config.fields.map { it.key to it.value }
+        for ((key, orderStr) in parameters) {
+            val option = mapping[key] ?: continue
+            if (orderStr.isNullOrEmpty()) result.add(key to option.toSortOption())
+            result.add(key to option.toSortOption(allowedSortOptions[orderStr]))
+        }
 
-        return SortRequest(result.toMap())
+        val impliedFields = config.impliedFields.entries.let {
+            val keySet = parameters.map(Pair<String, String?>::first).toSet()
+            it.filter { (key) -> key !in keySet }
+        }
+        if (impliedFields.isNotEmpty()) for ((key, option) in impliedFields) {
+            result.add(key to option.toSortOption())
+        }
+
+        return SortRequest(result)
     }
 
-    class Configuration {
-        internal val fields = LinkedHashMap<String, SortOption>()
+    class FieldOption internal constructor(
+        val fieldKey: String,
+        val column: Column<*>,
+        val sortOrder: SortOrder,
+        val implied: Boolean = false
+    ) {
+        internal fun withImplied(boolean: Boolean): FieldOption {
+            return FieldOption(fieldKey, column, sortOrder, boolean)
+        }
+
+        fun toSortOption(order: SortOrder? = null) = SortOption(column, order ?: sortOrder)
+    }
+
+    class Configuration internal constructor() {
+        internal val fields = LinkedHashMap<String, FieldOption>()
+
+        internal val impliedFields = LinkedHashMap<String, FieldOption>()
+        internal fun updateImpliedFields() {
+            impliedFields.clear()
+            fields.entries.forEach { (key, option) ->
+                if (option.implied) impliedFields[key] = option
+            }
+        }
 
         /** set the default sort order */
         var defaultSortOrder = SortOrder.ASC
@@ -83,9 +117,9 @@ class SortOptionMapping internal constructor(private val config: Configuration) 
         val DESC = SortOrder.DESC
 
         /** Use a property as name for sort option */
-        infix fun KProperty<*>.associateTo(column: Column<*>): Pair<String, SortOption> {
+        infix fun KProperty<*>.associateTo(column: Column<*>): Pair<String, FieldOption> {
             val name = this.name
-            val option = SortOption(column, defaultSortOrder)
+            val option = FieldOption(name, column, defaultSortOrder, false)
             fields[name] = option
             return name to option
         }
@@ -95,8 +129,8 @@ class SortOptionMapping internal constructor(private val config: Configuration) 
         }
 
         /** associate a parameter key to column */
-        infix fun String.associateTo(column: Column<*>): Pair<String, SortOption> {
-            val option = SortOption(column, defaultSortOrder)
+        infix fun String.associateTo(column: Column<*>): Pair<String, FieldOption> {
+            val option = FieldOption(this, column, defaultSortOrder)
             fields[this] = option
             return this to option
         }
@@ -105,14 +139,46 @@ class SortOptionMapping internal constructor(private val config: Configuration) 
             fieldName.forEach { fields.remove(it) }
         }
 
-        infix fun Pair<String, SortOption>.defaultOrder(order: SortOrder): Pair<String, SortOption> {
-            val o = SortOption(second.column, order)
+        infix fun Pair<String, FieldOption>.defaultOrder(order: SortOrder): Pair<String, FieldOption> {
+            val o = FieldOption(first, second.column, order, false)
             fields[first] = o
             return first to o
         }
 
+        fun FieldOption.implied(boolean: Boolean = true): FieldOption {
+            val altered = withImplied(boolean)
+            fields[fieldKey] = altered
+            return altered
+        }
+
+        fun Pair<String, FieldOption>.implied(boolean: Boolean = true): FieldOption {
+            val altered = FieldOption(first, second.column, second.sortOrder, boolean)
+            fields[first] = altered
+            return altered
+        }
+
+        fun Collection<String>.implied(boolean: Boolean = true) {
+            for (field in this) {
+                val old = fields[field] ?: continue
+                fields[field] = old.withImplied(boolean)
+            }
+        }
+
+        /**
+         * Change implied fields.
+         *
+         * Note: This method does not change the origin field declaring order
+         */
+        fun impliedFields(vararg fieldKey: String) {
+            for (field in fieldKey) {
+                val old = fields[field] ?: continue
+                fields[field] = old.withImplied(true)
+            }
+        }
+
         internal fun copyFrom(another: Configuration): Configuration {
             fields.putAll(another.fields)
+            impliedFields.putAll(another.impliedFields)
             defaultSortOrder = another.defaultSortOrder
             return this
         }
