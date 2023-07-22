@@ -41,13 +41,10 @@ fun Query.orderBy(sortRequest: SortRequest): Query {
     return orderBy(*options.toTypedArray())
 }
 
-class SortOptionMapping internal constructor(private val config: Configuration) {
+class SortOptionMapping private constructor(private val config: Configuration) {
 
     constructor(builder: Configuration.() -> Unit) : this(Configuration()) {
         config.builder()
-    }
-
-    init {
         config.updateImpliedFields()
     }
 
@@ -63,21 +60,26 @@ class SortOptionMapping internal constructor(private val config: Configuration) 
 
     private fun buildSortRequest(pairs: Collection<Pair<String, String?>>): SortRequest {
         val mapping = config.fields
-        val parameters = pairs.distinctBy { it.first }
+        val reqParams = pairs.distinctBy { it.first }
         val result = mutableListOf<Pair<String, SortOption>>()
 
-        for ((key, orderStr) in parameters) {
+        if(pairs.isNotEmpty()) for ((key, orderInStr) in reqParams) {
             val option = mapping[key] ?: continue
-            if (orderStr.isNullOrEmpty()) result.add(key to option.toSortOption())
-            result.add(key to option.toSortOption(allowedSortOptions[orderStr]))
+
+            val sortOrder = when {
+                orderInStr.isNullOrEmpty() -> option.toSortOption()
+                else -> option.toSortOption(allowedSortOptions[orderInStr])
+            }
+
+            result.add(key to sortOrder)
         }
 
-        val impliedFields = config.impliedFields.entries.let {
-            val keySet = parameters.map(Pair<String, String?>::first).toSet()
-            it.filter { (key) -> key !in keySet }
-        }
-        if (impliedFields.isNotEmpty()) for ((key, option) in impliedFields) {
-            result.add(key to option.toSortOption())
+        if(config.impliedFields.isNotEmpty()) {
+            val parameterKeySet = reqParams.map(Pair<String, String?>::first).toSet()
+            val impliedFields = config.impliedFields.entries.filter { (key, _) -> key !in parameterKeySet }
+            if (impliedFields.isNotEmpty()) {
+                for ((key, option) in impliedFields) result.add(key to option.toSortOption())
+            }
         }
 
         return SortRequest(result)
@@ -100,11 +102,12 @@ class SortOptionMapping internal constructor(private val config: Configuration) 
         internal val fields = LinkedHashMap<String, FieldOption>()
 
         internal val impliedFields = LinkedHashMap<String, FieldOption>()
-        internal fun updateImpliedFields() {
+        internal fun updateImpliedFields() : Configuration {
             impliedFields.clear()
             fields.entries.forEach { (key, option) ->
                 if (option.implied) impliedFields[key] = option
             }
+            return this
         }
 
         /** set the default sort order */
@@ -186,6 +189,6 @@ class SortOptionMapping internal constructor(private val config: Configuration) 
 
     /** copy this mapping */
     fun copy(config: Configuration.() -> Unit): SortOptionMapping {
-        return SortOptionMapping(Configuration().copyFrom(this.config).apply(config))
+        return SortOptionMapping(Configuration().copyFrom(this.config).apply(config).updateImpliedFields())
     }
 }
